@@ -2,13 +2,20 @@ import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
 
+function formatDate(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export function savingView() {
   return `
     <section class="card">
       <h2>Saving Use</h2>
 
       <form id="savingUseForm">
-        <input type="date" id="date_use" required />
+        <input type="date" id="date_use" value="${formatDate(new Date())}" required />
 
         <select id="from_save" required>
           <option value="">Ambil dari saving</option>

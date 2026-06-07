@@ -2,13 +2,20 @@ import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
 
+function formatDate(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 export function weeklyView() {
   return `
     <section class="card">
       <h2>Input Weekly Check</h2>
 
       <form id="weeklyCheckForm">
-        <input type="date" id="periodic_date" required />
+        <input type="date" id="periodic_date" value="${formatDate(new Date())}" required />
         <input type="number" id="cash" placeholder="Cash" />
         <input type="number" id="dana" placeholder="Dana" />
         <input type="number" id="gopay" placeholder="Gopay" />
