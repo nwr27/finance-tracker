@@ -208,3 +208,113 @@ button {
 .danger-btn:hover {
   background: #b91c1c;
 }
+
+.diff-match {
+  background: #dcfce7;
+  border: 1px solid #22c55e;
+}
+
+.diff-match span,
+.diff-match b {
+  color: #166534;
+}
+
+.diff-surplus {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+}
+
+.diff-surplus span,
+.diff-surplus b {
+  color: #92400e;
+}
+
+.diff-defisit {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+}
+
+.diff-defisit span,
+.diff-defisit b {
+  color: #991b1b;
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.expense-header h2 {
+  margin-bottom: 4px;
+}
+
+.expense-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.week-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.day-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.day-header h3 {
+  margin: 0;
+}
+
+.day-header span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.expense-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.expense-row:last-child {
+  border-bottom: none;
+}
+
+.expense-row span {
+  display: block;
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.expense-row-right {
+  text-align: right;
+  min-width: 150px;
+}
+
+.small-btn {
+  padding: 7px 10px;
+  font-size: 13px;
+  margin-top: 8px;
+}

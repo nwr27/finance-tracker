@@ -53,8 +53,8 @@ async function loadRealtimeSummary() {
       </div>
 
       <div class="hero-card">
-        <span>Total Save</span>
-        <b>${formatRupiah(data.realtime_save)}</b>
+        <span>Total Save (BCA)</span>
+        <b>${formatRupiah(data.realtime_save-data.trading)}</b>
       </div>
 
       <div class="hero-card">
@@ -70,8 +70,26 @@ async function loadRealtimeSummary() {
       ${summaryCard('Wedding', data.wedding)}
       ${summaryCard('Umrah', data.umrah)}
       ${summaryCard('Piggy', data.piggy)}
+      ${summaryCard('BCA + Trading', data.realtime_save)}
       ${summaryCard('Total Expense', data.total_expense)}
       ${summaryCard('Balance Allocation', data.total_balance_allocation)}
+    </div>
+  `
+}
+
+function differenceCard(value) {
+
+  const num = Number(value || 0)
+
+  let cls = 'diff-match'
+
+  if (num > 0) cls = 'diff-surplus'
+  if (num < 0) cls = 'diff-defisit'
+
+  return `
+    <div class="summary-card ${cls}">
+      <span>Difference</span>
+      <b>${formatRupiah(num)}</b>
     </div>
   `
 }
@@ -99,12 +117,13 @@ async function loadWeeklySummary() {
       </div>
 
       <div class="weekly-grid">
-        ${summaryCard('Previous Real Balance', item.previous_real_balance)}
-        ${summaryCard('Expense Usage', item.expense_usage)}
+        ${summaryCard('Previous Actual Balance', item.previous_real_balance)}
         ${summaryCard('Balance Allocation', item.balance_allocation)}
-        ${summaryCard('Weekly Check Balance', item.data_balance)}
-        ${summaryCard('Actual Real Balance', item.actual_real_balance)}
+        ${summaryCard('Expense Usage', item.expense_usage)}
         ${summaryCard('Realtime Save', item.realtime_save)}
+        ${summaryCard('Data Balance', item.data_balance)}
+        ${summaryCard('Actual Balance', item.actual_real_balance)}
+        ${differenceCard(item.difference)}
       </div>
     </div>
   `).join('')

@@ -2,6 +2,32 @@ import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
 
+let currentWeekStart = getWednesdayStart(new Date())
+
+function formatDate(date) {
+  return date.toISOString().slice(0, 10)
+}
+
+function getWednesdayStart(date) {
+  const d = new Date(date)
+  const day = d.getDay()
+  const diff = (day - 3 + 7) % 7
+  d.setDate(d.getDate() - diff)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+function addDays(date, days) {
+  const d = new Date(date)
+  d.setDate(d.getDate() + days)
+  return d
+}
+
+function getDayName(dateString) {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('id-ID', { weekday: 'long' })
+}
+
 export function expenseView() {
   return `
     <section class="card">
@@ -17,8 +43,22 @@ export function expenseView() {
     </section>
 
     <section class="card">
-      <h2>Data Expense</h2>
-      <button id="loadExpense">Refresh Data</button>
+      <div class="expense-header">
+        <div>
+          <h2>Expense Mingguan</h2>
+          <p id="expensePeriodLabel"></p>
+        </div>
+
+        <button id="loadExpense">Refresh</button>
+      </div>
+
+      <div class="week-nav">
+        <button id="prevWeek">← Prev Week</button>
+        <button id="thisWeek">This Week</button>
+        <button id="nextWeek">Next Week →</button>
+      </div>
+
+      <div id="expenseSummary"></div>
       <div id="expenseList"></div>
     </section>
   `
@@ -26,11 +66,24 @@ export function expenseView() {
 
 export async function loadExpenses() {
   const expenseList = document.querySelector('#expenseList')
+  const expenseSummary = document.querySelector('#expenseSummary')
+  const expensePeriodLabel = document.querySelector('#expensePeriodLabel')
+
+  const start = currentWeekStart
+  const end = addDays(start, 6)
+
+  const startText = formatDate(start)
+  const endText = formatDate(end)
+
+  expensePeriodLabel.textContent = `${startText} sampai ${endText}`
 
   const { data, error } = await supabase
     .from('expenses')
     .select('*')
+    .gte('date_expense', startText)
+    .lte('date_expense', endText)
     .order('date_expense', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (error) {
     expenseList.innerHTML = `<p>Gagal ambil data: ${error.message}</p>`
@@ -38,22 +91,74 @@ export async function loadExpenses() {
     return
   }
 
-  expenseList.innerHTML = data.map(item => `
-  <div class="item">
-    <b>${item.expense_name}</b><br>
-    ${item.date_expense} | ${item.code || '-'} | ${formatRupiah(item.amount)}
-    <br>
-    Periodic: ${item.periodic_date || '-'}
-    <br><br>
-    <button class="edit-btn" data-edit-expense="${item.id}">
-      Edit
-    </button>
-    <button class="danger-btn" data-delete-expense="${item.id}">
-      Hapus
-    </button>
-  </div>
-`).join('')
+  const totalWeek = data.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  const totalTransaction = data.length
+  const averageDaily = totalWeek / 7
 
+  expenseSummary.innerHTML = `
+    <div class="summary-grid">
+      <div class="summary-card">
+        <span>Total Minggu Ini</span>
+        <b>${formatRupiah(totalWeek)}</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Jumlah Transaksi</span>
+        <b>${totalTransaction}</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Rata-rata Harian</span>
+        <b>${formatRupiah(averageDaily)}</b>
+      </div>
+    </div>
+  `
+
+  const grouped = data.reduce((acc, item) => {
+    if (!acc[item.date_expense]) acc[item.date_expense] = []
+    acc[item.date_expense].push(item)
+    return acc
+  }, {})
+
+  const html = Object.entries(grouped).map(([date, items]) => {
+    const dailyTotal = items.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+
+    return `
+      <div class="day-group">
+        <div class="day-header">
+          <div>
+            <h3>${getDayName(date)}</h3>
+            <span>${date}</span>
+          </div>
+          <b>${formatRupiah(dailyTotal)}</b>
+        </div>
+
+        ${items.map(item => `
+          <div class="expense-row">
+            <div>
+              <b>${item.expense_name}</b>
+              <span>${item.code || '-'} • Periodic ${item.periodic_date || '-'}</span>
+            </div>
+
+            <div class="expense-row-right">
+              <b>${formatRupiah(item.amount)}</b>
+              <div>
+                <button class="edit-btn small-btn" data-edit-expense="${item.id}">Edit</button>
+                <button class="danger-btn small-btn" data-delete-expense="${item.id}">Hapus</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  }).join('')
+
+  expenseList.innerHTML = html || `<p>Tidak ada expense pada periode ini.</p>`
+
+  setupExpenseItemEvents()
+}
+
+function setupExpenseItemEvents() {
   document.querySelectorAll('[data-delete-expense]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.deleteExpense
@@ -74,8 +179,10 @@ export async function loadExpenses() {
 
       alert('Expense berhasil dihapus')
       loadExpenses()
+      notifyDataChanged()
     })
   })
+
   document.querySelectorAll('[data-edit-expense]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.editExpense
@@ -97,6 +204,8 @@ export async function loadExpenses() {
       document.querySelector('#amount').value = data.amount
 
       document.querySelector('#expenseForm').dataset.editId = id
+
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     })
   })
 }
@@ -104,6 +213,9 @@ export async function loadExpenses() {
 export function setupExpenseEvents() {
   const expenseForm = document.querySelector('#expenseForm')
   const loadExpense = document.querySelector('#loadExpense')
+  const prevWeek = document.querySelector('#prevWeek')
+  const thisWeek = document.querySelector('#thisWeek')
+  const nextWeek = document.querySelector('#nextWeek')
 
   expenseForm.addEventListener('submit', async (e) => {
     e.preventDefault()
@@ -141,11 +253,30 @@ export function setupExpenseEvents() {
     }
 
     alert('Expense berhasil disimpan')
+
+    currentWeekStart = getWednesdayStart(new Date(payload.date_expense))
+
     expenseForm.reset()
     delete expenseForm.dataset.editId
+
     loadExpenses()
     notifyDataChanged()
   })
 
   loadExpense.addEventListener('click', loadExpenses)
+
+  prevWeek.addEventListener('click', () => {
+    currentWeekStart = addDays(currentWeekStart, -7)
+    loadExpenses()
+  })
+
+  thisWeek.addEventListener('click', () => {
+    currentWeekStart = getWednesdayStart(new Date())
+    loadExpenses()
+  })
+
+  nextWeek.addEventListener('click', () => {
+    currentWeekStart = addDays(currentWeekStart, 7)
+    loadExpenses()
+  })
 }
