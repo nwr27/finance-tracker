@@ -3,6 +3,9 @@ import { summaryCard } from '../components/SummaryCard.js'
 import { listenDataChanged } from '../utils/events.js'
 import { formatRupiah } from '../utils/format.js'
 
+let weeklyPage = 0
+const WEEKLY_PAGE_SIZE = 2
+
 export function dashboardView() {
   return `
     <section class="dashboard-header">
@@ -16,12 +19,21 @@ export function dashboardView() {
     </section>
 
     <section class="card">
+
       <div class="section-title-row">
-        <h3>Weekly Summary Terbaru</h3>
-        <small>Menampilkan 4 periode terakhir</small>
+        <div>
+          <h3>Weekly Summary</h3>
+          <small>2 periode per halaman</small>
+        </div>
+
+        <div class="weekly-nav">
+          <button id="weeklyPrev">←</button>
+          <button id="weeklyNext">→</button>
+        </div>
       </div>
 
       <div id="weeklySummary"></div>
+
     </section>
 
     <div id="codeStatsModal" class="modal hidden">
@@ -156,11 +168,14 @@ function differenceCard(value) {
 async function loadWeeklySummary() {
   const weeklySummary = document.querySelector('#weeklySummary')
 
+  const from = weeklyPage * WEEKLY_PAGE_SIZE
+  const to = from + WEEKLY_PAGE_SIZE - 1
+
   const { data, error } = await supabase
     .from('periodic_summary')
     .select('*')
     .order('periodic_date', { ascending: false })
-    .limit(4)
+    .range(from, to)
 
   if (error) {
     weeklySummary.innerHTML = `<p>Gagal ambil weekly summary: ${error.message}</p>`
@@ -199,6 +214,25 @@ export function setupDashboardEvents() {
       document
         .querySelector('#codeStatsModal')
         .classList.add('hidden')
+    })
+  document
+    .querySelector('#weeklyPrev')
+    ?.addEventListener('click', async () => {
+
+      if (weeklyPage > 0) {
+        weeklyPage--
+        await loadWeeklySummary()
+      }
+
+    })
+
+  document
+    .querySelector('#weeklyNext')
+    ?.addEventListener('click', async () => {
+
+      weeklyPage++
+      await loadWeeklySummary()
+
     })
 
   listenDataChanged(loadDashboard)

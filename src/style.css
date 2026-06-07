@@ -398,3 +398,15 @@ button {
 .code-card {
   color: #111827;
 }
+
+.weekly-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.weekly-nav button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  font-size: 18px;
+}
