@@ -343,3 +343,58 @@ button {
   justify-content: space-between;
   align-items: center;
 }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 999;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  width: 700px;
+  max-width: 95%;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.code-stat-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 80px;
+  gap: 16px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.clickable-card {
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.clickable-card:hover {
+  background: #eef2ff;
+  border-color: #2563eb;
+}
+
+.code-card {
+  color: #111827;
+}

@@ -62,7 +62,12 @@ export function expenseView() {
 
       <div id="expenseFormContainer" class="hidden-form">
         <form id="expenseForm">
-          <input type="date" id="date_expense" required />
+          <input
+            type="date"
+            id="date_expense"
+            value="${formatDate(new Date())}"
+            required
+          />
           <input type="text" id="expense_name" placeholder="Nama pengeluaran" required />
           <input type="text" id="code" placeholder="Kode, contoh ED/TP/HL" />
           <input type="number" id="amount" placeholder="Nominal" required />

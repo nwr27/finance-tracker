@@ -23,6 +23,17 @@ export function dashboardView() {
 
       <div id="weeklySummary"></div>
     </section>
+
+    <div id="codeStatsModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Persentase Pengeluaran per Kode</h3>
+          <button id="closeCodeStats">✕</button>
+        </div>
+
+        <div id="codeStatsContent"></div>
+      </div>
+    </div>
   `
 }
 
@@ -45,6 +56,8 @@ async function loadRealtimeSummary() {
     return
   }
 
+  const topCode = await getTopExpenseCode()
+
   realtimeSummary.innerHTML = `
     <div class="hero-grid">
       <div class="hero-card">
@@ -54,7 +67,7 @@ async function loadRealtimeSummary() {
 
       <div class="hero-card">
         <span>Total Save (BCA)</span>
-        <b>${formatRupiah(data.realtime_save-data.trading)}</b>
+        <b>${formatRupiah(data.realtime_save - data.trading)}</b>
       </div>
 
       <div class="hero-card">
@@ -73,12 +86,58 @@ async function loadRealtimeSummary() {
       ${summaryCard('BCA + Trading', data.realtime_save)}
       ${summaryCard('Total Expense', data.total_expense)}
       ${summaryCard('Balance Allocation', data.total_balance_allocation)}
+
+      <button id="showCodeStats" class="summary-card clickable-card code-card">
+        <span>${topCode.code}</span>
+        <b>${formatRupiah(topCode.total)}</b>
+      </button>
     </div>
   `
+
+  setupCodeStatsButton()
+}
+
+async function getTopExpenseCode() {
+  const { data, error } = await supabase
+    .from('expenses')
+    .select('code, amount')
+
+  if (error || !data || data.length === 0) {
+    return {
+      code: 'Code',
+      total: 0,
+    }
+  }
+
+  const grouped = {}
+
+  data.forEach(item => {
+    const code = item.code || 'UNKNOWN'
+    grouped[code] = (grouped[code] || 0) + Number(item.amount || 0)
+  })
+
+  const sorted = Object.entries(grouped)
+    .sort((a, b) => b[1] - a[1])
+
+  return {
+    code: sorted[0][0],
+    total: sorted[0][1],
+  }
+}
+
+function setupCodeStatsButton() {
+  document
+    .querySelector('#showCodeStats')
+    ?.addEventListener('click', async () => {
+      document
+        .querySelector('#codeStatsModal')
+        .classList.remove('hidden')
+
+      await loadCodeStatistics()
+    })
 }
 
 function differenceCard(value) {
-
   const num = Number(value || 0)
 
   let cls = 'diff-match'
@@ -134,5 +193,64 @@ export function setupDashboardEvents() {
     .querySelector('#loadRealtimeSummary')
     .addEventListener('click', loadDashboard)
 
+  document
+    .querySelector('#closeCodeStats')
+    .addEventListener('click', () => {
+      document
+        .querySelector('#codeStatsModal')
+        .classList.add('hidden')
+    })
+
   listenDataChanged(loadDashboard)
+}
+
+async function loadCodeStatistics() {
+  const content = document.querySelector('#codeStatsContent')
+
+  const { data, error } = await supabase
+    .from('expenses')
+    .select('code, amount')
+
+  if (error) {
+    content.innerHTML = `<p>${error.message}</p>`
+    return
+  }
+
+  const totalExpense = data.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  )
+
+  const grouped = {}
+
+  data.forEach(item => {
+    const code = item.code || 'UNKNOWN'
+    grouped[code] = (grouped[code] || 0) + Number(item.amount || 0)
+  })
+
+  const sorted = Object.entries(grouped)
+    .sort((a, b) => b[1] - a[1])
+
+  content.innerHTML = sorted.map(([code, total]) => {
+    const percentage =
+      totalExpense > 0
+        ? ((total / totalExpense) * 100).toFixed(1)
+        : '0.0'
+
+    return `
+      <div class="code-stat-row">
+        <div>
+          <b>${code}</b>
+        </div>
+
+        <div>
+          ${formatRupiah(total)}
+        </div>
+
+        <div>
+          ${percentage}%
+        </div>
+      </div>
+    `
+  }).join('')
 }
