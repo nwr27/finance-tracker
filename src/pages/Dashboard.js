@@ -84,7 +84,7 @@ async function loadWeeklySummary() {
   const endDate = document.querySelector('#weeklyEndDate').value
 
   let query = supabase
-    .from('weekly_summary')
+    .from('periodic_summary')
     .select('*')
     .order('periodic_date', { ascending: false })
 
@@ -99,7 +99,7 @@ async function loadWeeklySummary() {
   const { data, error } = await query
 
   if (error) {
-    weeklySummary.innerHTML = `<p>Gagal ambil weekly summary: ${error.message}</p>`
+    weeklySummary.innerHTML = `<p>Gagal ambil periodic summary: ${error.message}</p>`
     console.error(error)
     return
   }
@@ -107,10 +107,11 @@ async function loadWeeklySummary() {
   weeklySummary.innerHTML = data.map(item => `
     <div class="summary-grid">
       ${summaryCard('Periode', item.periodic_date, 'date')}
-      ${summaryCard('Real Balance', item.real_balance)}
+      ${summaryCard('Previous Real Balance', item.previous_real_balance)}
       ${summaryCard('Expense Usage', item.expense_usage)}
       ${summaryCard('Balance Allocation', item.balance_allocation)}
       ${summaryCard('Weekly Check Balance', item.data_balance)}
+      ${summaryCard('Actual Real Balance', item.actual_real_balance)}
       ${summaryCard('Realtime Save', item.realtime_save)}
       ${summaryCard('Nest Egg', item.nest_egg)}
       ${summaryCard('Wedding', item.wedding)}

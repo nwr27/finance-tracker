@@ -41,12 +41,12 @@ async function loadWeeklyAudit() {
   const weeklyAuditList = document.querySelector('#weeklyAuditList')
 
   const { data, error } = await supabase
-    .from('weekly_summary')
+    .from('periodic_summary')
     .select('*')
     .order('periodic_date', { ascending: false })
 
   if (error) {
-    weeklyAuditList.innerHTML = `<p>Gagal ambil weekly audit: ${error.message}</p>`
+    weeklyAuditList.innerHTML = `<p>Gagal ambil periodic audit: ${error.message}</p>`
     console.error(error)
     return
   }
@@ -70,7 +70,9 @@ async function loadWeeklyAudit() {
     return `
       <div class="item">
         <b>Periode: ${item.periodic_date}</b><br>
-        Real Balance: ${formatRupiah(item.real_balance)}
+        Previous Real Balance: ${formatRupiah(item.previous_real_balance)}
+        <br>
+        Actual Real Balance: ${item.actual_real_balance === null ? '-' : formatRupiah(item.actual_real_balance)}
         <br>
         Data Balance: ${formatRupiah(item.data_balance)}
         <br>
