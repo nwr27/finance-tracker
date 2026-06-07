@@ -239,23 +239,6 @@ button {
   color: #991b1b;
 }
 
-.expense-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.expense-header h2 {
-  margin-bottom: 4px;
-}
-
-.expense-header p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 14px;
-}
-
 .week-nav {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -276,7 +259,8 @@ button {
   justify-content: space-between;
   align-items: center;
   background: #f9fafb;
-  padding: 14px;
+  padding: 12px;
+  font-size: 16px;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -286,14 +270,14 @@ button {
 
 .day-header span {
   color: #6b7280;
-  font-size: 13px;
+    font-size: 16px;
+    background: #dbdbdd;
+    padding: 3px 7px;
+    border-radius: 999px;
+    color: #7c7a91;
 }
 
 .expense-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -306,17 +290,6 @@ button {
   margin-top: 4px;
   color: #6b7280;
   font-size: 13px;
-}
-
-.expense-row-right {
-  text-align: right;
-  min-width: 150px;
-}
-
-.small-btn {
-  padding: 7px 10px;
-  font-size: 13px;
-  margin-top: 8px;
 }
 
 .hidden-form {
@@ -409,4 +382,60 @@ button {
   height: 42px;
   padding: 0;
   font-size: 18px;
+}
+
+.compact-expense-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+}
+
+.expense-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-weight: 200;
+}
+
+.expense-main b {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expense-code {
+  color: #6b7280;
+  font-size: 12px;
+  background: #f3f4f6;
+  padding: 3px 7px;
+  border-radius: 999px;
+}
+
+.expense-actions {
+  font-weight: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.expense-actions b {
+  min-width: 90px;
+  text-align: right;
+}
+
+.small-btn {
+  padding: 6px 9px;
+  font-size: 12px;
+  margin-top: 0;
+}
+
+.empty-day {
+  text-align: center;
+  color: #0055ff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px;
 }

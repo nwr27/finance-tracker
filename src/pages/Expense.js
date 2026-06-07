@@ -179,8 +179,7 @@ export async function loadExpenses() {
     <div class="day-group">
       <div class="day-header">
         <div>
-          <h3>${getDayName(date)}</h3>
-          <span>${formatDisplayDate(date)}</span>
+          <h3>${getDayName(date)} <span>${formatDisplayDate(date)}</span></h3>
         </div>
 
         <b>${formatRupiah(dailyTotal)}</b>
@@ -192,27 +191,26 @@ export async function loadExpenses() {
               Tidak ada pengeluaran
             </div>
           `
-        : items.map(item => `
-            <div class="expense-row">
-              <div>
-                <b>${item.expense_name}</b>
-                <span>${item.code || '-'}</span>
-              </div>
+      : items.map(item => `
+        <div class="expense-row compact-expense-row">
+          <div class="expense-main">
+            <b>${item.expense_name}</b>
+            <span class="expense-code">${item.code || '-'}</span>
+          </div>
 
-              <div class="expense-row-right">
-                <b>${formatRupiah(item.amount)}</b>
-                <div>
-                  <button class="edit-btn small-btn" data-edit-expense="${item.id}">
-                    Edit
-                  </button>
+          <div class="expense-actions">
+            <b>${formatRupiah(item.amount)}</b>
 
-                  <button class="danger-btn small-btn" data-delete-expense="${item.id}">
-                    Hapus
-                  </button>
-                </div>
-              </div>
-            </div>
-          `).join('')
+            <button class="edit-btn small-btn" data-edit-expense="${item.id}">
+              Edit
+            </button>
+
+            <button class="danger-btn small-btn" data-delete-expense="${item.id}">
+              Hapus
+            </button>
+          </div>
+        </div>
+      `).join('')
       }
     </div>
   `
