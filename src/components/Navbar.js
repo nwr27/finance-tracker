@@ -10,16 +10,16 @@ export function navbar() {
         Expense
       </button>
 
+      <button data-page="weekly">
+        Weekly
+      </button>
+
       <button data-page="income">
         Income
       </button>
 
       <button data-page="saving">
         Saving
-      </button>
-
-      <button data-page="weekly">
-        Weekly
       </button>
 
       <button data-page="history">
