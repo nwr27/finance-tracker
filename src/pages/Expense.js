@@ -109,9 +109,22 @@ export async function loadExpenses() {
     return
   }
 
+  const today = formatDate(new Date())
+
+  const weekDays = Array.from({ length: 7 }, (_, index) => {
+    const date = addDays(currentWeekStart, index)
+    return formatDate(date)
+  })
+
+  const visibleWeekDays = weekDays
+    .filter(date => date <= today)
+    .reverse()
+
+  const dayCount = visibleWeekDays.length
+
   const totalWeek = data.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const totalTransaction = data.length
-  const averageDaily = totalWeek / 7
+  const averageDaily = dayCount > 0 ? totalWeek / dayCount : 0
 
   expenseSummary.innerHTML = `
     <div class="summary-grid">
@@ -138,16 +151,9 @@ export async function loadExpenses() {
     return acc
   }, {})
 
-  const today = formatDate(new Date())
+  
 
-  const weekDays = Array.from({ length: 7 }, (_, index) => {
-    const date = addDays(currentWeekStart, index)
-    return formatDate(date)
-  })
-    .filter(date => date <= today)
-    .reverse()
-
-  const html = weekDays.map(date => {
+  const html = visibleWeekDays.map(date => {
     const items = grouped[date] || []
     const dailyTotal = items.reduce((sum, item) => sum + Number(item.amount || 0), 0)
 
