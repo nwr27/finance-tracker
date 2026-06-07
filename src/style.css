@@ -318,3 +318,12 @@ button {
   font-size: 13px;
   margin-top: 8px;
 }
+
+.hidden-form {
+  display: none;
+  margin-top: 16px;
+}
+
+.hidden-form.show {
+  display: block;
+}
