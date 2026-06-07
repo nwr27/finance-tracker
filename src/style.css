@@ -47,15 +47,29 @@ button {
   border-radius: 8px;
 }
 
+.navbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.navbar button {
+  padding: 10px 18px;
+}
+
 .item {
   padding: 12px;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.summary-grid {
+.summary-grid,
+.weekly-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
+}
+
+.summary-grid {
   margin-top: 16px;
   margin-bottom: 24px;
 }
@@ -76,36 +90,6 @@ button {
 
 .summary-card b {
   font-size: 18px;
-}
-
-.navbar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.navbar button {
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  cursor: pointer;
-}
-
-.danger-btn {
-  background: #dc2626;
-}
-
-.danger-btn:hover {
-  background: #b91c1c;
-}
-
-.edit-btn {
-  background: #f59e0b;
-  margin-right: 8px;
-}
-
-.edit-btn:hover {
-  background: #d97706;
 }
 
 .hero-grid {
@@ -132,6 +116,50 @@ button {
 
 .hero-card b {
   font-size: 26px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dashboard-header h2,
+.section-title-row h3,
+.weekly-card-header h4 {
+  margin: 0;
+}
+
+.section-title-row,
+.weekly-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title-row small,
+.weekly-card-header span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.sub-title {
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.weekly-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: white;
+}
+
+.weekly-card-header h4 {
+  font-size: 20px;
 }
 
 .filter-row {
@@ -162,4 +190,21 @@ button {
 .status-defisit {
   background: #fee2e2;
   color: #991b1b;
+}
+
+.edit-btn {
+  background: #f59e0b;
+  margin-right: 8px;
+}
+
+.edit-btn:hover {
+  background: #d97706;
+}
+
+.danger-btn {
+  background: #dc2626;
+}
+
+.danger-btn:hover {
+  background: #b91c1c;
 }

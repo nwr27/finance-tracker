@@ -1,26 +1,24 @@
 import { supabase } from '../supabase.js'
 import { summaryCard } from '../components/SummaryCard.js'
 import { listenDataChanged } from '../utils/events.js'
+import { formatRupiah } from '../utils/format.js'
 
 export function dashboardView() {
   return `
+    <section class="dashboard-header">
+      <h2>Dashboard</h2>
+      <button id="loadRealtimeSummary">Refresh</button>
+    </section>
+
     <section class="card">
-      <h2>Realtime Summary</h2>
-
-      <div class="top-actions">
-        <button id="loadRealtimeSummary">Refresh Realtime</button>
-      </div>
-
+      <h3>Ringkasan Utama</h3>
       <div id="realtimeSummary"></div>
     </section>
 
     <section class="card">
-      <h2>Weekly Summary</h2>
-
-      <div class="filter-row">
-        <input type="date" id="weeklyStartDate" />
-        <input type="date" id="weeklyEndDate" />
-        <button id="loadWeeklySummary">Filter Weekly</button>
+      <div class="section-title-row">
+        <h3>Weekly Summary Terbaru</h3>
+        <small>Menampilkan 4 periode terakhir</small>
       </div>
 
       <div id="weeklySummary"></div>
@@ -51,21 +49,21 @@ async function loadRealtimeSummary() {
     <div class="hero-grid">
       <div class="hero-card">
         <span>Available Balance</span>
-        <b>Rp${Number(data.realtime_balance || 0).toLocaleString('id-ID')}</b>
+        <b>${formatRupiah(data.realtime_balance)}</b>
       </div>
 
       <div class="hero-card">
         <span>Total Save</span>
-        <b>Rp${Number(data.realtime_save || 0).toLocaleString('id-ID')}</b>
+        <b>${formatRupiah(data.realtime_save)}</b>
       </div>
 
       <div class="hero-card">
         <span>Trading</span>
-        <b>Rp${Number(data.trading || 0).toLocaleString('id-ID')}</b>
+        <b>${formatRupiah(data.trading)}</b>
       </div>
     </div>
 
-    <h3>Saving Detail</h3>
+    <h3 class="sub-title">Saving Detail</h3>
 
     <div class="summary-grid">
       ${summaryCard('Nest Egg', data.nest_egg)}
@@ -80,44 +78,34 @@ async function loadRealtimeSummary() {
 
 async function loadWeeklySummary() {
   const weeklySummary = document.querySelector('#weeklySummary')
-  const startDate = document.querySelector('#weeklyStartDate').value
-  const endDate = document.querySelector('#weeklyEndDate').value
 
-  let query = supabase
+  const { data, error } = await supabase
     .from('periodic_summary')
     .select('*')
     .order('periodic_date', { ascending: false })
-
-  if (startDate) {
-    query = query.gte('periodic_date', startDate)
-  }
-
-  if (endDate) {
-    query = query.lte('periodic_date', endDate)
-  }
-
-  const { data, error } = await query
+    .limit(4)
 
   if (error) {
-    weeklySummary.innerHTML = `<p>Gagal ambil periodic summary: ${error.message}</p>`
+    weeklySummary.innerHTML = `<p>Gagal ambil weekly summary: ${error.message}</p>`
     console.error(error)
     return
   }
 
   weeklySummary.innerHTML = data.map(item => `
-    <div class="summary-grid">
-      ${summaryCard('Periode', item.periodic_date, 'date')}
-      ${summaryCard('Previous Real Balance', item.previous_real_balance)}
-      ${summaryCard('Expense Usage', item.expense_usage)}
-      ${summaryCard('Balance Allocation', item.balance_allocation)}
-      ${summaryCard('Weekly Check Balance', item.data_balance)}
-      ${summaryCard('Actual Real Balance', item.actual_real_balance)}
-      ${summaryCard('Realtime Save', item.realtime_save)}
-      ${summaryCard('Nest Egg', item.nest_egg)}
-      ${summaryCard('Wedding', item.wedding)}
-      ${summaryCard('Umrah', item.umrah)}
-      ${summaryCard('Piggy', item.piggy)}
-      ${summaryCard('Trading', item.trading)}
+    <div class="weekly-card">
+      <div class="weekly-card-header">
+        <h4>${item.periodic_date}</h4>
+        <span>Periode</span>
+      </div>
+
+      <div class="weekly-grid">
+        ${summaryCard('Previous Real Balance', item.previous_real_balance)}
+        ${summaryCard('Expense Usage', item.expense_usage)}
+        ${summaryCard('Balance Allocation', item.balance_allocation)}
+        ${summaryCard('Weekly Check Balance', item.data_balance)}
+        ${summaryCard('Actual Real Balance', item.actual_real_balance)}
+        ${summaryCard('Realtime Save', item.realtime_save)}
+      </div>
     </div>
   `).join('')
 }
@@ -125,10 +113,7 @@ async function loadWeeklySummary() {
 export function setupDashboardEvents() {
   document
     .querySelector('#loadRealtimeSummary')
-    .addEventListener('click', loadRealtimeSummary)
+    .addEventListener('click', loadDashboard)
 
-  document
-    .querySelector('#loadWeeklySummary')
-    .addEventListener('click', loadWeeklySummary)
   listenDataChanged(loadDashboard)
 }
