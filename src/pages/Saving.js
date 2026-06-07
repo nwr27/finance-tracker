@@ -1,5 +1,6 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
+import { notifyDataChanged } from '../utils/events.js'
 
 export function savingView() {
   return `
@@ -92,6 +93,7 @@ export function setupSavingEvents() {
     alert('Saving use berhasil disimpan')
     savingUseForm.reset()
     loadSavings()
+    notifyDataChanged()
   })
 
   loadSaving.addEventListener('click', loadSavings)

@@ -1,22 +1,67 @@
 import { supabase } from '../supabase.js'
 import { summaryCard } from '../components/SummaryCard.js'
+import { listenDataChanged } from '../utils/events.js'
 
 export function dashboardView() {
   return `
     <section class="card">
-      <h2>Dashboard Summary</h2>
+      <h2>Realtime Summary</h2>
 
       <div class="top-actions">
-        <button id="loadSummary">Refresh Summary</button>
+        <button id="loadRealtimeSummary">Refresh Realtime</button>
       </div>
 
-      <div id="summaryList"></div>
+      <div id="realtimeSummary"></div>
+    </section>
+
+    <section class="card">
+      <h2>Weekly Summary</h2>
+
+      <div class="top-actions">
+        <button id="loadWeeklySummary">Refresh Weekly</button>
+      </div>
+
+      <div id="weeklySummary"></div>
     </section>
   `
 }
 
 export async function loadDashboard() {
-  const summaryList = document.querySelector('#summaryList')
+  await loadRealtimeSummary()
+  await loadWeeklySummary()
+}
+
+async function loadRealtimeSummary() {
+  const realtimeSummary = document.querySelector('#realtimeSummary')
+
+  const { data, error } = await supabase
+    .from('realtime_summary')
+    .select('*')
+    .single()
+
+  if (error) {
+    realtimeSummary.innerHTML = `<p>Gagal ambil realtime summary: ${error.message}</p>`
+    console.error(error)
+    return
+  }
+
+  realtimeSummary.innerHTML = `
+    <div class="summary-grid">
+      ${summaryCard('Balance Saat Ini', data.realtime_balance)}
+      ${summaryCard('Total Save', data.realtime_save)}
+      ${summaryCard('Nest Egg', data.nest_egg)}
+      ${summaryCard('Wedding', data.wedding)}
+      ${summaryCard('Umrah', data.umrah)}
+      ${summaryCard('Piggy', data.piggy)}
+      ${summaryCard('Trading', data.trading)}
+      ${summaryCard('Total Expense', data.total_expense)}
+      ${summaryCard('Total Balance Allocation', data.total_balance_allocation)}
+    </div>
+  `
+}
+
+async function loadWeeklySummary() {
+  const weeklySummary = document.querySelector('#weeklySummary')
 
   const { data, error } = await supabase
     .from('weekly_summary')
@@ -24,12 +69,12 @@ export async function loadDashboard() {
     .order('periodic_date', { ascending: false })
 
   if (error) {
-    summaryList.innerHTML = `<p>Gagal ambil summary: ${error.message}</p>`
+    weeklySummary.innerHTML = `<p>Gagal ambil weekly summary: ${error.message}</p>`
     console.error(error)
     return
   }
 
-  summaryList.innerHTML = data.map(item => `
+  weeklySummary.innerHTML = data.map(item => `
     <div class="summary-grid">
       ${summaryCard('Periode', item.periodic_date, 'date')}
       ${summaryCard('Real Balance', item.real_balance)}
@@ -47,5 +92,12 @@ export async function loadDashboard() {
 }
 
 export function setupDashboardEvents() {
-  document.querySelector('#loadSummary').addEventListener('click', loadDashboard)
+  document
+    .querySelector('#loadRealtimeSummary')
+    .addEventListener('click', loadRealtimeSummary)
+
+  document
+    .querySelector('#loadWeeklySummary')
+    .addEventListener('click', loadWeeklySummary)
+  listenDataChanged(loadDashboard)
 }

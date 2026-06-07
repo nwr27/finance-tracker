@@ -1,5 +1,6 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
+import { notifyDataChanged } from '../utils/events.js'
 
 export function weeklyView() {
   return `
@@ -83,6 +84,7 @@ export function setupWeeklyEvents() {
     alert('Weekly check berhasil disimpan')
     weeklyCheckForm.reset()
     loadWeeklyChecks()
+    notifyDataChanged()
   })
 
   loadWeekly.addEventListener('click', loadWeeklyChecks)

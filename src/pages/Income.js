@@ -1,5 +1,6 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
+import { notifyDataChanged } from '../utils/events.js'
 
 export function incomeView() {
   return `
@@ -85,6 +86,7 @@ export function setupIncomeEvents() {
     alert('Income berhasil disimpan')
     incomeForm.reset()
     loadIncomes()
+    notifyDataChanged()
   })
 
   loadIncome.addEventListener('click', loadIncomes)

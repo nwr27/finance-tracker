@@ -1,5 +1,6 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
+import { notifyDataChanged } from '../utils/events.js'
 
 export function expenseView() {
   return `
@@ -74,6 +75,7 @@ export function setupExpenseEvents() {
     alert('Expense berhasil disimpan')
     expenseForm.reset()
     loadExpenses()
+    notifyDataChanged()
   })
 
   loadExpense.addEventListener('click', loadExpenses)

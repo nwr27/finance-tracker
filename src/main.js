@@ -5,6 +5,7 @@ import { expenseView, loadExpenses, setupExpenseEvents } from './pages/Expense.j
 import { incomeView, loadIncomes, setupIncomeEvents } from './pages/Income.js'
 import { weeklyView, loadWeeklyChecks, setupWeeklyEvents } from './pages/Weekly.js'
 import { savingView, loadSavings, setupSavingEvents } from './pages/Saving.js'
+import { historyView, loadHistory, setupHistoryEvents } from './pages/History.js'
 
 const app = document.querySelector('#app')
 
@@ -56,6 +57,7 @@ const routes = {
   income: showIncome,
   saving: showSaving,
   weekly: showWeekly,
+  history: showHistory,
 }
 
 document.querySelectorAll('[data-page]').forEach(btn => {
@@ -64,5 +66,10 @@ document.querySelectorAll('[data-page]').forEach(btn => {
     routes[page]()
   })
 })
+function showHistory() {
+  pageContent.innerHTML = historyView()
+  setupHistoryEvents()
+  loadHistory()
+}
 
 showDashboard()

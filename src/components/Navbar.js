@@ -22,6 +22,10 @@ export function navbar() {
         Weekly
       </button>
 
+      <button data-page="history">
+        History
+      </button>
+
     </nav>
   `
 }
