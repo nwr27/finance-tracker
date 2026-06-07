@@ -5,7 +5,7 @@ import { notifyDataChanged } from '../utils/events.js'
 export function weeklyView() {
   return `
     <section class="card">
-      <h2>Weekly Check</h2>
+      <h2>Input Weekly Check</h2>
 
       <form id="weeklyCheckForm">
         <input type="date" id="periodic_date" required />
@@ -19,15 +19,77 @@ export function weeklyView() {
     </section>
 
     <section class="card">
-      <h2>Data Weekly Check</h2>
-      <button id="loadWeekly">Refresh Data</button>
-      <div id="weeklyList"></div>
+      <h2>Weekly Audit</h2>
+      <button id="loadWeeklyAudit">Refresh Audit</button>
+      <div id="weeklyAuditList"></div>
+    </section>
+
+    <section class="card">
+      <h2>Weekly Check Raw Data</h2>
+      <button id="loadWeeklyRaw">Refresh Raw Data</button>
+      <div id="weeklyRawList"></div>
     </section>
   `
 }
 
 export async function loadWeeklyChecks() {
-  const weeklyList = document.querySelector('#weeklyList')
+  await loadWeeklyAudit()
+  await loadWeeklyRawChecks()
+}
+
+async function loadWeeklyAudit() {
+  const weeklyAuditList = document.querySelector('#weeklyAuditList')
+
+  const { data, error } = await supabase
+    .from('weekly_summary')
+    .select('*')
+    .order('periodic_date', { ascending: false })
+
+  if (error) {
+    weeklyAuditList.innerHTML = `<p>Gagal ambil weekly audit: ${error.message}</p>`
+    console.error(error)
+    return
+  }
+
+  weeklyAuditList.innerHTML = data.map(item => {
+    const difference = Number(item.difference || 0)
+
+    let status = 'Match'
+    let statusClass = 'status-match'
+
+    if (difference > 0) {
+      status = 'Surplus'
+      statusClass = 'status-surplus'
+    }
+
+    if (difference < 0) {
+      status = 'Defisit'
+      statusClass = 'status-defisit'
+    }
+
+    return `
+      <div class="item">
+        <b>Periode: ${item.periodic_date}</b><br>
+        Real Balance: ${formatRupiah(item.real_balance)}
+        <br>
+        Data Balance: ${formatRupiah(item.data_balance)}
+        <br>
+        Difference: ${formatRupiah(item.difference)}
+        <br>
+        Status: <span class="status-badge ${statusClass}">${status}</span>
+        <br><br>
+        Expense Usage: ${formatRupiah(item.expense_usage)}
+        <br>
+        Balance Allocation: ${formatRupiah(item.balance_allocation)}
+        <br>
+        Realtime Save: ${formatRupiah(item.realtime_save)}
+      </div>
+    `
+  }).join('')
+}
+
+async function loadWeeklyRawChecks() {
+  const weeklyRawList = document.querySelector('#weeklyRawList')
 
   const { data, error } = await supabase
     .from('weekly_checks')
@@ -35,22 +97,27 @@ export async function loadWeeklyChecks() {
     .order('periodic_date', { ascending: false })
 
   if (error) {
-    weeklyList.innerHTML = `<p>Gagal ambil weekly check: ${error.message}</p>`
+    weeklyRawList.innerHTML = `<p>Gagal ambil raw weekly check: ${error.message}</p>`
     console.error(error)
     return
   }
 
-  weeklyList.innerHTML = data.map(item => `
+  weeklyRawList.innerHTML = data.map(item => `
     <div class="item">
       <b>Periode: ${item.periodic_date}</b><br>
-      Cash: ${formatRupiah(item.cash)} |
-      Dana: ${formatRupiah(item.dana)} |
-      Gopay: ${formatRupiah(item.gopay)} |
+      Cash: ${formatRupiah(item.cash)}
+      <br>
+      Dana: ${formatRupiah(item.dana)}
+      <br>
+      Gopay: ${formatRupiah(item.gopay)}
+      <br>
       BCA: ${formatRupiah(item.bca)}
       <br>
       Real Balance: ${formatRupiah(item.real_balance)}
       <br>
       Note: ${item.note || '-'}
+      <br><br>
+
       <button class="edit-btn" data-edit-weekly="${item.id}">
         Edit
       </button>
@@ -60,6 +127,7 @@ export async function loadWeeklyChecks() {
       </button>
     </div>
   `).join('')
+
   document.querySelectorAll('[data-edit-weekly]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.editWeekly
@@ -86,6 +154,7 @@ export async function loadWeeklyChecks() {
       document.querySelector('#weeklyCheckForm').dataset.editId = id
     })
   })
+
   document.querySelectorAll('[data-delete-weekly]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.deleteWeekly
@@ -105,15 +174,17 @@ export async function loadWeeklyChecks() {
       }
 
       alert('Weekly check berhasil dihapus')
+
       loadWeeklyChecks()
+      notifyDataChanged()
     })
   })
-
 }
 
 export function setupWeeklyEvents() {
   const weeklyCheckForm = document.querySelector('#weeklyCheckForm')
-  const loadWeekly = document.querySelector('#loadWeekly')
+  const loadWeeklyAuditBtn = document.querySelector('#loadWeeklyAudit')
+  const loadWeeklyRawBtn = document.querySelector('#loadWeeklyRaw')
 
   weeklyCheckForm.addEventListener('submit', async (e) => {
     e.preventDefault()
@@ -127,9 +198,24 @@ export function setupWeeklyEvents() {
       note: document.querySelector('#weekly_note').value,
     }
 
-    const { error } = await supabase
-      .from('weekly_checks')
-      .upsert(payload, { onConflict: 'periodic_date' })
+    const editId = weeklyCheckForm.dataset.editId
+
+    let error
+
+    if (editId) {
+      const result = await supabase
+        .from('weekly_checks')
+        .update(payload)
+        .eq('id', editId)
+
+      error = result.error
+    } else {
+      const result = await supabase
+        .from('weekly_checks')
+        .upsert(payload, { onConflict: 'periodic_date' })
+
+      error = result.error
+    }
 
     if (error) {
       alert('Gagal simpan weekly check: ' + error.message)
@@ -138,11 +224,14 @@ export function setupWeeklyEvents() {
     }
 
     alert('Weekly check berhasil disimpan')
+
     weeklyCheckForm.reset()
     delete weeklyCheckForm.dataset.editId
+
     loadWeeklyChecks()
     notifyDataChanged()
   })
 
-  loadWeekly.addEventListener('click', loadWeeklyChecks)
+  loadWeeklyAuditBtn.addEventListener('click', loadWeeklyAudit)
+  loadWeeklyRawBtn.addEventListener('click', loadWeeklyRawChecks)
 }

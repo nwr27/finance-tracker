@@ -17,8 +17,10 @@ export function dashboardView() {
     <section class="card">
       <h2>Weekly Summary</h2>
 
-      <div class="top-actions">
-        <button id="loadWeeklySummary">Refresh Weekly</button>
+      <div class="filter-row">
+        <input type="date" id="weeklyStartDate" />
+        <input type="date" id="weeklyEndDate" />
+        <button id="loadWeeklySummary">Filter Weekly</button>
       </div>
 
       <div id="weeklySummary"></div>
@@ -48,7 +50,7 @@ async function loadRealtimeSummary() {
   realtimeSummary.innerHTML = `
     <div class="hero-grid">
       <div class="hero-card">
-        <span>Balance Saat Ini</span>
+        <span>Available Balance</span>
         <b>Rp${Number(data.realtime_balance || 0).toLocaleString('id-ID')}</b>
       </div>
 
@@ -78,11 +80,23 @@ async function loadRealtimeSummary() {
 
 async function loadWeeklySummary() {
   const weeklySummary = document.querySelector('#weeklySummary')
+  const startDate = document.querySelector('#weeklyStartDate').value
+  const endDate = document.querySelector('#weeklyEndDate').value
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('weekly_summary')
     .select('*')
     .order('periodic_date', { ascending: false })
+
+  if (startDate) {
+    query = query.gte('periodic_date', startDate)
+  }
+
+  if (endDate) {
+    query = query.lte('periodic_date', endDate)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     weeklySummary.innerHTML = `<p>Gagal ambil weekly summary: ${error.message}</p>`
@@ -96,7 +110,7 @@ async function loadWeeklySummary() {
       ${summaryCard('Real Balance', item.real_balance)}
       ${summaryCard('Expense Usage', item.expense_usage)}
       ${summaryCard('Balance Allocation', item.balance_allocation)}
-      ${summaryCard('Realtime Balance', item.realtime_balance)}
+      ${summaryCard('Weekly Check Balance', item.data_balance)}
       ${summaryCard('Realtime Save', item.realtime_save)}
       ${summaryCard('Nest Egg', item.nest_egg)}
       ${summaryCard('Wedding', item.wedding)}
