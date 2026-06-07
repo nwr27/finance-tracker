@@ -46,16 +46,32 @@ async function loadRealtimeSummary() {
   }
 
   realtimeSummary.innerHTML = `
+    <div class="hero-grid">
+      <div class="hero-card">
+        <span>Balance Saat Ini</span>
+        <b>Rp${Number(data.realtime_balance || 0).toLocaleString('id-ID')}</b>
+      </div>
+
+      <div class="hero-card">
+        <span>Total Save</span>
+        <b>Rp${Number(data.realtime_save || 0).toLocaleString('id-ID')}</b>
+      </div>
+
+      <div class="hero-card">
+        <span>Trading</span>
+        <b>Rp${Number(data.trading || 0).toLocaleString('id-ID')}</b>
+      </div>
+    </div>
+
+    <h3>Saving Detail</h3>
+
     <div class="summary-grid">
-      ${summaryCard('Balance Saat Ini', data.realtime_balance)}
-      ${summaryCard('Total Save', data.realtime_save)}
       ${summaryCard('Nest Egg', data.nest_egg)}
       ${summaryCard('Wedding', data.wedding)}
       ${summaryCard('Umrah', data.umrah)}
       ${summaryCard('Piggy', data.piggy)}
-      ${summaryCard('Trading', data.trading)}
       ${summaryCard('Total Expense', data.total_expense)}
-      ${summaryCard('Total Balance Allocation', data.total_balance_allocation)}
+      ${summaryCard('Balance Allocation', data.total_balance_allocation)}
     </div>
   `
 }
