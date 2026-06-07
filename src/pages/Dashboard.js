@@ -3,8 +3,8 @@ import { summaryCard } from '../components/SummaryCard.js'
 import { listenDataChanged } from '../utils/events.js'
 import { formatRupiah } from '../utils/format.js'
 
-let weeklyPage = 0
-const WEEKLY_PAGE_SIZE = 2
+let weeklyOffset = 0
+const WEEKLY_LIMIT = 2
 
 export function dashboardView() {
   return `
@@ -27,8 +27,8 @@ export function dashboardView() {
         </div>
 
         <div class="weekly-nav">
-          <button id="weeklyPrev">←</button>
-          <button id="weeklyNext">→</button>
+          <button id="weeklyNext">←</button>
+          <button id="weeklyPrev">→</button>
         </div>
       </div>
 
@@ -168,8 +168,8 @@ function differenceCard(value) {
 async function loadWeeklySummary() {
   const weeklySummary = document.querySelector('#weeklySummary')
 
-  const from = weeklyPage * WEEKLY_PAGE_SIZE
-  const to = from + WEEKLY_PAGE_SIZE - 1
+  const from = weeklyOffset
+  const to = weeklyOffset + WEEKLY_LIMIT - 1
 
   const { data, error } = await supabase
     .from('periodic_summary')
@@ -218,21 +218,17 @@ export function setupDashboardEvents() {
   document
     .querySelector('#weeklyPrev')
     ?.addEventListener('click', async () => {
-
-      if (weeklyPage > 0) {
-        weeklyPage--
+      if (weeklyOffset > 0) {
+        weeklyOffset--
         await loadWeeklySummary()
       }
-
     })
 
   document
     .querySelector('#weeklyNext')
     ?.addEventListener('click', async () => {
-
-      weeklyPage++
+      weeklyOffset++
       await loadWeeklySummary()
-
     })
 
   listenDataChanged(loadDashboard)
