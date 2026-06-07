@@ -50,13 +50,70 @@ export async function loadIncomes() {
   }
 
   incomeList.innerHTML = data.map(item => `
-    <div class="item">
-      <b>${item.note || 'Income'}</b><br>
-      ${item.date_income} | ${item.allocation_type} | ${formatRupiah(item.amount)}
-      <br>
-      Periodic: ${item.periodic_date || '-'}
-    </div>
-  `).join('')
+  <div class="item">
+    <b>${item.note || 'Income'}</b><br>
+    ${item.date_income} | ${item.allocation_type} | ${formatRupiah(item.amount)}
+    <br>
+    Periodic: ${item.periodic_date || '-'}
+    <br><br>
+    <button class="edit-btn" data-edit-income="${item.id}">
+      Edit
+    </button>
+    <button class="danger-btn" data-delete-income="${item.id}">
+      Hapus
+    </button>
+  </div>
+`).join('')
+
+  document.querySelectorAll('[data-delete-income]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.deleteIncome
+
+      const confirmDelete = confirm(
+        'Yakin hapus income ini? Allocation dan saving ledger terkait juga akan terhapus.'
+      )
+
+      if (!confirmDelete) return
+
+      const { error } = await supabase
+        .from('incomes')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        alert('Gagal hapus income: ' + error.message)
+        console.error(error)
+        return
+      }
+
+      alert('Income berhasil dihapus')
+      loadIncomes()
+    })
+  })
+  document.querySelectorAll('[data-edit-income]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.editIncome
+
+      const { data, error } = await supabase
+        .from('incomes')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        alert('Gagal ambil income: ' + error.message)
+        console.error(error)
+        return
+      }
+
+      document.querySelector('#date_income').value = data.date_income
+      document.querySelector('#amount_income').value = data.amount
+      document.querySelector('#note_income').value = data.note || ''
+      document.querySelector('#allocation_type').value = data.allocation_type
+
+      document.querySelector('#incomeForm').dataset.editId = id
+    })
+  })
 }
 
 export function setupIncomeEvents() {
@@ -73,9 +130,24 @@ export function setupIncomeEvents() {
       allocation_type: document.querySelector('#allocation_type').value,
     }
 
-    const { error } = await supabase
-      .from('incomes')
-      .insert(payload)
+    const editId = incomeForm.dataset.editId
+
+    let error
+
+    if (editId) {
+      const result = await supabase
+        .from('incomes')
+        .update(payload)
+        .eq('id', editId)
+
+      error = result.error
+    } else {
+      const result = await supabase
+        .from('incomes')
+        .insert(payload)
+
+      error = result.error
+    }
 
     if (error) {
       alert('Gagal simpan income: ' + error.message)
@@ -85,6 +157,7 @@ export function setupIncomeEvents() {
 
     alert('Income berhasil disimpan')
     incomeForm.reset()
+    delete incomeForm.dataset.editId
     loadIncomes()
     notifyDataChanged()
   })

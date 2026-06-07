@@ -39,13 +39,66 @@ export async function loadExpenses() {
   }
 
   expenseList.innerHTML = data.map(item => `
-    <div class="item">
-      <b>${item.expense_name}</b><br>
-      ${item.date_expense} | ${item.code || '-'} | ${formatRupiah(item.amount)}
-      <br>
-      Periodic: ${item.periodic_date || '-'}
-    </div>
-  `).join('')
+  <div class="item">
+    <b>${item.expense_name}</b><br>
+    ${item.date_expense} | ${item.code || '-'} | ${formatRupiah(item.amount)}
+    <br>
+    Periodic: ${item.periodic_date || '-'}
+    <br><br>
+    <button class="edit-btn" data-edit-expense="${item.id}">
+      Edit
+    </button>
+    <button class="danger-btn" data-delete-expense="${item.id}">
+      Hapus
+    </button>
+  </div>
+`).join('')
+
+  document.querySelectorAll('[data-delete-expense]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.deleteExpense
+
+      const confirmDelete = confirm('Yakin hapus expense ini?')
+      if (!confirmDelete) return
+
+      const { error } = await supabase
+        .from('expenses')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        alert('Gagal hapus expense: ' + error.message)
+        console.error(error)
+        return
+      }
+
+      alert('Expense berhasil dihapus')
+      loadExpenses()
+    })
+  })
+  document.querySelectorAll('[data-edit-expense]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.editExpense
+
+      const { data, error } = await supabase
+        .from('expenses')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        alert('Gagal ambil data expense: ' + error.message)
+        return
+      }
+
+      document.querySelector('#date_expense').value = data.date_expense
+      document.querySelector('#expense_name').value = data.expense_name
+      document.querySelector('#code').value = data.code || ''
+      document.querySelector('#amount').value = data.amount
+
+      document.querySelector('#expenseForm').dataset.editId = id
+    })
+  })
 }
 
 export function setupExpenseEvents() {
@@ -62,9 +115,24 @@ export function setupExpenseEvents() {
       amount: Number(document.querySelector('#amount').value),
     }
 
-    const { error } = await supabase
-      .from('expenses')
-      .insert(payload)
+    const editId = expenseForm.dataset.editId
+
+    let error
+
+    if (editId) {
+      const result = await supabase
+        .from('expenses')
+        .update(payload)
+        .eq('id', editId)
+
+      error = result.error
+    } else {
+      const result = await supabase
+        .from('expenses')
+        .insert(payload)
+
+      error = result.error
+    }
 
     if (error) {
       alert('Gagal simpan expense: ' + error.message)
@@ -74,6 +142,7 @@ export function setupExpenseEvents() {
 
     alert('Expense berhasil disimpan')
     expenseForm.reset()
+    delete expenseForm.dataset.editId
     loadExpenses()
     notifyDataChanged()
   })

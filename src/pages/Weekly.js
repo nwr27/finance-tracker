@@ -51,8 +51,64 @@ export async function loadWeeklyChecks() {
       Real Balance: ${formatRupiah(item.real_balance)}
       <br>
       Note: ${item.note || '-'}
+      <button class="edit-btn" data-edit-weekly="${item.id}">
+        Edit
+      </button>
+
+      <button class="danger-btn" data-delete-weekly="${item.id}">
+        Hapus
+      </button>
     </div>
   `).join('')
+  document.querySelectorAll('[data-edit-weekly]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.editWeekly
+
+      const { data, error } = await supabase
+        .from('weekly_checks')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        alert('Gagal ambil weekly check: ' + error.message)
+        console.error(error)
+        return
+      }
+
+      document.querySelector('#periodic_date').value = data.periodic_date
+      document.querySelector('#cash').value = data.cash
+      document.querySelector('#dana').value = data.dana
+      document.querySelector('#gopay').value = data.gopay
+      document.querySelector('#bca').value = data.bca
+      document.querySelector('#weekly_note').value = data.note || ''
+
+      document.querySelector('#weeklyCheckForm').dataset.editId = id
+    })
+  })
+  document.querySelectorAll('[data-delete-weekly]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.deleteWeekly
+
+      const confirmDelete = confirm('Yakin hapus weekly check ini?')
+      if (!confirmDelete) return
+
+      const { error } = await supabase
+        .from('weekly_checks')
+        .delete()
+        .eq('id', id)
+
+      if (error) {
+        alert('Gagal hapus weekly check: ' + error.message)
+        console.error(error)
+        return
+      }
+
+      alert('Weekly check berhasil dihapus')
+      loadWeeklyChecks()
+    })
+  })
+
 }
 
 export function setupWeeklyEvents() {
@@ -83,6 +139,7 @@ export function setupWeeklyEvents() {
 
     alert('Weekly check berhasil disimpan')
     weeklyCheckForm.reset()
+    delete weeklyCheckForm.dataset.editId
     loadWeeklyChecks()
     notifyDataChanged()
   })

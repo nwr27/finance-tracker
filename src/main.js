@@ -4,7 +4,7 @@ import { dashboardView, loadDashboard, setupDashboardEvents } from './pages/Dash
 import { expenseView, loadExpenses, setupExpenseEvents } from './pages/Expense.js'
 import { incomeView, loadIncomes, setupIncomeEvents } from './pages/Income.js'
 import { weeklyView, loadWeeklyChecks, setupWeeklyEvents } from './pages/Weekly.js'
-import { savingView, loadSavings, setupSavingEvents } from './pages/Saving.js'
+import { savingView, loadSavings, loadSavingUses, setupSavingEvents } from './pages/Saving.js'
 import { historyView, loadHistory, setupHistoryEvents } from './pages/History.js'
 
 const app = document.querySelector('#app')
@@ -49,6 +49,7 @@ function showSaving() {
   pageContent.innerHTML = savingView()
   setupSavingEvents()
   loadSavings()
+  loadSavingUses()
 }
 
 const routes = {
