@@ -43,7 +43,7 @@ function showExpenseForm() {
 
 function hideExpenseForm() {
   document.querySelector('#expenseFormContainer').classList.remove('show')
-  document.querySelector('#toggleExpenseForm').textContent = '+ Tambah Expense'
+  document.querySelector('#toggleExpenseForm').textContent = '+ Tambah'
 }
 
 export function expenseView() {
@@ -56,7 +56,7 @@ export function expenseView() {
         </div>
 
         <button id="toggleExpenseForm">
-          + Tambah Expense
+          + Tambah
         </button>
       </div>
 
@@ -69,7 +69,7 @@ export function expenseView() {
             required
           />
           <input type="text" id="expense_name" placeholder="Nama pengeluaran" required />
-          <input type="text" id="code" placeholder="Kode, contoh ED/TP/HL" />
+          <input type="text" id="code" placeholder="Kode, contoh ED/TP/HL" value="ED" required />
           <input type="number" id="amount" placeholder="Nominal" required />
           <button type="submit">Simpan Expense</button>
         </form>
@@ -87,6 +87,18 @@ export function expenseView() {
   `
 }
 
+function formatDisplayDate(date) {
+  const d = typeof date === 'string'
+    ? parseLocalDate(date)
+    : date
+
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+
+  return `${day}/${month}/${year}`
+}
+
 export async function loadExpenses() {
   const expenseList = document.querySelector('#expenseList')
   const expenseSummary = document.querySelector('#expenseSummary')
@@ -98,7 +110,8 @@ export async function loadExpenses() {
   const startText = formatDate(start)
   const endText = formatDate(end)
 
-  expensePeriodLabel.textContent = `Periode Kamis–Rabu: ${startText} sampai ${endText}`
+  expensePeriodLabel.textContent =
+    `Periode ${formatDisplayDate(start)} - ${formatDisplayDate(end)}`
 
   const { data, error } = await supabase
     .from('expenses')
@@ -167,7 +180,7 @@ export async function loadExpenses() {
       <div class="day-header">
         <div>
           <h3>${getDayName(date)}</h3>
-          <span>${date}</span>
+          <span>${formatDisplayDate(date)}</span>
         </div>
 
         <b>${formatRupiah(dailyTotal)}</b>
@@ -183,7 +196,7 @@ export async function loadExpenses() {
             <div class="expense-row">
               <div>
                 <b>${item.expense_name}</b>
-                <span>${item.code || '-'} • Periodic ${item.periodic_date || '-'}</span>
+                <span>${item.code || '-'}</span>
               </div>
 
               <div class="expense-row-right">

@@ -9,10 +9,10 @@ export function weeklyView() {
 
       <form id="weeklyCheckForm">
         <input type="date" id="periodic_date" required />
-        <input type="number" id="cash" placeholder="Cash" value="0" />
-        <input type="number" id="dana" placeholder="Dana" value="0" />
-        <input type="number" id="gopay" placeholder="Gopay" value="0" />
-        <input type="number" id="bca" placeholder="BCA" value="0" />
+        <input type="number" id="cash" placeholder="Cash" />
+        <input type="number" id="dana" placeholder="Dana" />
+        <input type="number" id="gopay" placeholder="Gopay" />
+        <input type="number" id="bca" placeholder="BCA" />
         <input type="text" id="weekly_note" placeholder="Catatan weekly check" />
         <button type="submit">Simpan Weekly Check</button>
       </form>
