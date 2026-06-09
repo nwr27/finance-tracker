@@ -157,6 +157,11 @@ export async function loadExpenses() {
       </div>
 
       <div class="summary-card">
+        <span>Rata-rata Transaksi</span>
+        <b>${totalTransaction > 0 ? (totalWeek / totalTransaction).toFixed(2) : '0.00'}</b>
+      </div>
+
+      <div class="summary-card">
         <span>Rata-rata Harian</span>
         <b>${formatRupiah(averageDaily)}</b>
       </div>
