@@ -22,10 +22,6 @@ export function navbar() {
         Saving
       </button>
 
-      <button data-page="history">
-        History
-      </button>
-
     </nav>
   `
 }

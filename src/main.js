@@ -5,7 +5,6 @@ import { expenseView, loadExpenses, setupExpenseEvents } from './pages/Expense.j
 import { incomeView, loadIncomes, setupIncomeEvents } from './pages/Income.js'
 import { weeklyView, loadWeeklyChecks, setupWeeklyEvents } from './pages/Weekly.js'
 import { savingView, loadSavings, loadSavingUses, setupSavingEvents } from './pages/Saving.js'
-import { historyView, loadHistory, setupHistoryEvents } from './pages/History.js'
 import { isLoggedIn, login, logout } from './utils/auth.js'
 
 const app = document.querySelector('#app')
@@ -69,12 +68,6 @@ function showSaving() {
   loadSavingUses()
 }
 
-function showHistory() {
-  getPageContent().innerHTML = historyView()
-  setupHistoryEvents()
-  loadHistory()
-}
-
 function setupRoutes() {
   const routes = {
     dashboard: showDashboard,
@@ -82,7 +75,6 @@ function setupRoutes() {
     income: showIncome,
     saving: showSaving,
     weekly: showWeekly,
-    history: showHistory,
   }
 
   document.querySelectorAll('[data-page]').forEach(btn => {
