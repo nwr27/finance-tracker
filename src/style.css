@@ -551,3 +551,258 @@ button {
 .compact-expense-row {
   position: relative;
 }
+
+/* BARU */
+html,
+body,
+#app {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 12px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .app-header {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .app-header h1 {
+    font-size: 22px;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  #logoutBtn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .navbar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .navbar button {
+    width: 100%;
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+
+  .card {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+  }
+
+  .section-title-row {
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .section-title-row h2 {
+    font-size: 20px;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .section-title-row p {
+    font-size: 12px;
+    margin: 6px 0 0;
+  }
+
+  #toggleExpenseForm {
+    flex: 0 0 70px;
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .week-nav {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 10px 0;
+  }
+
+  .week-nav button {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin: 8px 0 12px;
+  }
+
+  .summary-card {
+    padding: 8px;
+    border-radius: 9px;
+  }
+
+  .summary-card span {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .summary-card b {
+    font-size: 14px;
+  }
+
+  #expenseList {
+    max-height: calc(100vh - 330px);
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+
+  .day-group {
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+
+  .day-header {
+    padding: 8px 10px;
+  }
+
+  .day-header h3 {
+    font-size: 15px;
+  }
+
+  .day-header span {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .day-header b {
+    font-size: 14px;
+  }
+
+  .compact-expense-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .expense-main {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .expense-name {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .expense-code {
+    display: none;
+  }
+
+  .expense-actions {
+    gap: 4px;
+  }
+
+  .expense-actions b {
+    min-width: 72px;
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .menu-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 9px;
+    font-size: 18px;
+  }
+
+  .menu-dropdown {
+    top: 32px;
+    right: 0;
+  }
+
+  .small-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .empty-day {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .expense-name.expanded-name {
+    left: 8px;
+    right: 48px;
+    top: 6px;
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .hero-grid,
+  .weekly-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .hero-card {
+    padding: 14px;
+  }
+
+  .hero-card span {
+    font-size: 11px;
+  }
+
+  .hero-card b {
+    font-size: 18px;
+  }
+}
+
+button {
+  transition: all 0.18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.navbar button.active,
+.week-nav button.active,
+#toggleExpenseForm.active,
+.clickable-card.active {
+  background: #111827;
+  color: white;
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.22);
+}
+
+.clickable-card {
+  transition: all 0.18s ease;
+}
+
+.clickable-card:hover {
+  transform: translateY(-2px);
+  background: #eef2ff;
+  border-color: #2563eb;
+}

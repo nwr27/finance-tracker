@@ -79,6 +79,12 @@ function setupRoutes() {
 
   document.querySelectorAll('[data-page]').forEach(btn => {
     btn.addEventListener('click', () => {
+      document
+        .querySelectorAll('[data-page]')
+        .forEach(item => item.classList.remove('active'))
+
+      btn.classList.add('active')
+
       const page = btn.dataset.page
       routes[page]()
     })
@@ -105,6 +111,9 @@ function renderApp() {
   })
 
   setupRoutes()
+  document
+    .querySelector('[data-page="dashboard"]')
+    .classList.add('active')
   showDashboard()
 }
 

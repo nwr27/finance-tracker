@@ -39,11 +39,13 @@ function getDayName(dateString) {
 function showExpenseForm() {
   document.querySelector('#expenseFormContainer').classList.add('show')
   document.querySelector('#toggleExpenseForm').textContent = '✕ Tutup Form'
+  document.querySelector('#toggleExpenseForm').classList.add('active')
 }
 
 function hideExpenseForm() {
   document.querySelector('#expenseFormContainer').classList.remove('show')
   document.querySelector('#toggleExpenseForm').textContent = '+ Tambah'
+  document.querySelector('#toggleExpenseForm').classList.remove('active')
 }
 
 export function expenseView() {
@@ -372,16 +374,28 @@ export function setupExpenseEvents() {
 
   prevWeek.addEventListener('click', () => {
     currentWeekStart = addDays(currentWeekStart, -7)
+    setActiveWeekButton(prevWeek)
     loadExpenses()
   })
 
   thisWeek.addEventListener('click', () => {
     currentWeekStart = getThursdayStart(new Date())
+    setActiveWeekButton(thisWeek)
     loadExpenses()
   })
 
   nextWeek.addEventListener('click', () => {
     currentWeekStart = addDays(currentWeekStart, 7)
+    setActiveWeekButton(nextWeek)
     loadExpenses()
   })
+
+  function setActiveWeekButton(activeBtn) {
+    document
+      .querySelectorAll('.week-nav button')
+      .forEach(btn => btn.classList.remove('active'))
+
+    activeBtn.classList.add('active')
+  }
+  setActiveWeekButton(thisWeek)
 }
