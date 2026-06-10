@@ -199,7 +199,9 @@ export async function loadExpenses() {
       : items.map(item => `
         <div class="expense-row compact-expense-row">
           <div class="expense-main">
-            <b>${item.expense_name}</b>
+            <b class="expense-name" data-full-name="${item.expense_name}">
+              ${item.expense_name}
+            </b>
             <span class="expense-code">${item.code || '-'}</span>
           </div>
 
@@ -237,6 +239,11 @@ export async function loadExpenses() {
 
 
 function setupExpenseItemEvents() {
+  document.querySelectorAll('.expense-name').forEach(name => {
+    name.addEventListener('click', () => {
+      name.classList.toggle('expanded-name')
+    })
+  })
   document.querySelectorAll('[data-menu-expense]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.menuExpense
@@ -249,7 +256,7 @@ function setupExpenseItemEvents() {
       menu.classList.toggle('hidden')
     })
   })
-  
+
   document.querySelectorAll('[data-delete-expense]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.deleteExpense
