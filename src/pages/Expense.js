@@ -206,13 +206,21 @@ export async function loadExpenses() {
           <div class="expense-actions">
             <b>${formatRupiah(item.amount)}</b>
 
-            <button class="edit-btn small-btn" data-edit-expense="${item.id}">
-              Edit
-            </button>
+            <div class="expense-menu">
+              <button class="menu-btn" data-menu-expense="${item.id}">
+                ⋮
+              </button>
 
-            <button class="danger-btn small-btn" data-delete-expense="${item.id}">
-              Hapus
-            </button>
+              <div class="menu-dropdown hidden" id="menu-${item.id}">
+                <button class="edit-btn small-btn" data-edit-expense="${item.id}">
+                  Edit
+                </button>
+
+                <button class="danger-btn small-btn" data-delete-expense="${item.id}">
+                  Hapus
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       `).join('')
@@ -226,7 +234,22 @@ export async function loadExpenses() {
   setupExpenseItemEvents()
 }
 
+
+
 function setupExpenseItemEvents() {
+  document.querySelectorAll('[data-menu-expense]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.menuExpense
+      const menu = document.querySelector(`#menu-${id}`)
+
+      document.querySelectorAll('.menu-dropdown').forEach(item => {
+        if (item !== menu) item.classList.add('hidden')
+      })
+
+      menu.classList.toggle('hidden')
+    })
+  })
+  
   document.querySelectorAll('[data-delete-expense]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.deleteExpense
