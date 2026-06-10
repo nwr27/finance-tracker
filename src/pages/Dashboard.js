@@ -4,36 +4,34 @@ import { listenDataChanged } from '../utils/events.js'
 import { formatRupiah } from '../utils/format.js'
 
 let weeklyOffset = 0
-const WEEKLY_LIMIT = 2
+const WEEKLY_LIMIT = 1
 
 export function dashboardView() {
   return `
-    <section class="dashboard-header">
-      <h2>Dashboard</h2>
-      <button id="loadRealtimeSummary">Refresh</button>
-    </section>
-
     <section class="card">
-      <h3>Ringkasan Utama</h3>
+      <div class="section-title-row dashboard-main-title">
+        <h3>Ringkasan Utama</h3>
+
+        <div class="dashboard-actions">
+          <button id="loadRealtimeSummary">Refresh</button>
+          <button id="dashboardLogoutBtn">Logout</button>
+        </div>
+      </div>
+
       <div id="realtimeSummary"></div>
     </section>
 
-    <section class="card">
-
+    <section class="card weekly-summary-card">
       <div class="section-title-row">
-        <div>
-          <h3>Weekly Summary</h3>
-          <small>2 periode per halaman</small>
-        </div>
+        <h3>Weekly Summary</h3>
 
         <div class="weekly-nav">
-          <button id="weeklyNext">←</button>
-          <button id="weeklyPrev">→</button>
+          <button id="weeklyPrev">←</button>
+          <button id="weeklyNext">→</button>
         </div>
       </div>
 
       <div id="weeklySummary"></div>
-
     </section>
 
     <div id="codeStatsModal" class="modal hidden">
@@ -229,6 +227,13 @@ export function setupDashboardEvents() {
     ?.addEventListener('click', async () => {
       weeklyOffset++
       await loadWeeklySummary()
+    })
+  document
+    .querySelector('#dashboardLogoutBtn')
+    ?.addEventListener('click', () => {
+      document
+        .querySelector('#app')
+        .dispatchEvent(new Event('logout-request'))
     })
 
   listenDataChanged(loadDashboard)
