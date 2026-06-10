@@ -8,6 +8,9 @@ const WEEKLY_LIMIT = 1
 
 export function dashboardView() {
   return `
+    <section class="dashboard-header">
+      <h2>Finance Tracker</h2>
+    </section>
     <section class="card">
       <div class="section-title-row dashboard-main-title">
         <h3>Ringkasan Utama</h3>
@@ -26,8 +29,8 @@ export function dashboardView() {
         <h3>Weekly Summary</h3>
 
         <div class="weekly-nav">
-          <button id="weeklyPrev">←</button>
-          <button id="weeklyNext">→</button>
+          <button id="weeklyPrev">↑</button>
+          <button id="weeklyNext">↓</button>
         </div>
       </div>
 
