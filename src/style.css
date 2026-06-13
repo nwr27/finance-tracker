@@ -250,7 +250,7 @@ button {
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   margin-bottom: 16px;
-  overflow: hidden;
+  overflow: visible;
   background: white;
 }
 
@@ -1440,23 +1440,21 @@ button:active {
   }
 }
 
-.expense-list,
-.day-card,
-.transaction-row {
-  overflow: visible !important;
+.expense-row {
+  position: relative;
+  z-index: 1;
 }
 
-.action-menu {
-  position: fixed;
-  z-index: 9999;
-  background: white;
-  border-radius: 18px;
-  padding: 14px 18px;
-  display: flex;
-  gap: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,.18);
+.expense-row:has(.menu-dropdown:not(.hidden)) {
+  z-index: 50;
 }
 
-.expense-page {
-  padding-bottom: 140px;
+.menu-dropdown {
+  z-index: 999;
+}
+
+@media (max-width: 600px) {
+  #expenseList {
+    padding-bottom: 140px;
+  }
 }
