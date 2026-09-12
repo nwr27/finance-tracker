@@ -1,6 +1,7 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
+import { canWrite } from '../utils/auth.js'
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -166,6 +167,8 @@ async function loadWeeklyRawChecks() {
 
   document.querySelectorAll('[data-delete-weekly]').forEach(btn => {
     btn.addEventListener('click', async () => {
+      if (!canWrite()) return
+
       const id = btn.dataset.deleteWeekly
 
       const confirmDelete = confirm('Yakin hapus weekly check ini?')
@@ -197,6 +200,8 @@ export function setupWeeklyEvents() {
 
   weeklyCheckForm.addEventListener('submit', async (e) => {
     e.preventDefault()
+
+    if (!canWrite()) return
 
     const payload = {
       periodic_date: document.querySelector('#periodic_date').value,

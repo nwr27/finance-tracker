@@ -1458,3 +1458,16 @@ button:active {
     padding-bottom: 140px;
   }
 }
+
+/* View-only mode: navigation/refresh tetap aktif, semua kontrol tulis disembunyikan. */
+.view-only #toggleExpenseForm,
+.view-only #expenseFormContainer,
+.view-only #incomeForm,
+.view-only #weeklyCheckForm,
+.view-only #savingUseForm,
+.view-only #quickAddExpense,
+.view-only .edit-btn,
+.view-only .danger-btn,
+.view-only .expense-menu {
+  display: none !important;
+}

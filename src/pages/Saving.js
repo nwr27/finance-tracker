@@ -1,6 +1,7 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
+import { canWrite } from '../utils/auth.js'
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -116,6 +117,8 @@ export async function loadSavingUses() {
 
       btn.addEventListener('click', async () => {
 
+        if (!canWrite()) return
+
         const id = btn.dataset.deleteSavingUse
 
         const confirmDelete = confirm(
@@ -176,6 +179,8 @@ export function setupSavingEvents() {
 
   savingUseForm.addEventListener('submit', async (e) => {
     e.preventDefault()
+
+    if (!canWrite()) return
 
     const payload = {
       date_use: document.querySelector('#date_use').value,

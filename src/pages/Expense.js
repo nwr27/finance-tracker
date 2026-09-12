@@ -1,6 +1,7 @@
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import { notifyDataChanged } from '../utils/events.js'
+import { canWrite } from '../utils/auth.js'
 
 let currentWeekStart = getThursdayStart(new Date())
 
@@ -261,6 +262,8 @@ function setupExpenseItemEvents() {
 
   document.querySelectorAll('[data-delete-expense]').forEach(btn => {
     btn.addEventListener('click', async () => {
+      if (!canWrite()) return
+
       const id = btn.dataset.deleteExpense
       const confirmDelete = confirm('Yakin hapus expense ini?')
 
@@ -327,6 +330,8 @@ export function setupExpenseEvents() {
 
   expenseForm.addEventListener('submit', async (e) => {
     e.preventDefault()
+
+    if (!canWrite()) return
 
     const payload = {
       date_expense: document.querySelector('#date_expense').value,
