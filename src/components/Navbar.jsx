@@ -9,7 +9,7 @@ const items = [
   ['saving', 'Saving'],
 ]
 
-export default function Navbar({ page, onNavigate, onQuickExpense, viewOnly }) {
+export default function Navbar({ page, onNavigate, onQuickExpense, viewOnly, currentUser }) {
   const [open, setOpen] = useState(false)
   const handleRef = useRef(null)
   const drag = useRef({ down: false, moved: false, startY: 0, startBottom: 25 })
@@ -76,6 +76,12 @@ export default function Navbar({ page, onNavigate, onQuickExpense, viewOnly }) {
             onClick={() => navigate(key)}
           >{label}</button>
         ))}
+
+        {currentUser && (
+          <div className={styles.userBadge} title={`User aktif: ${currentUser.name}`}>
+            {currentUser.name}
+          </div>
+        )}
 
         {!viewOnly && (
           <button className={styles.quickAdd} onClick={() => { setOpen(false); onQuickExpense() }}>+</button>

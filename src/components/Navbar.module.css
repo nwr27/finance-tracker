@@ -93,3 +93,26 @@
     font-weight: 700;
   }
 }
+
+
+.userBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: #166534;
+  background: #fef9c3;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .userBadge {
+    margin-top: 4px;
+    justify-content: flex-start;
+  }
+}

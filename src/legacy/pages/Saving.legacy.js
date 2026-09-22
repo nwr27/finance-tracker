@@ -1,7 +1,7 @@
 import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
-import { canWrite } from '../../utils/auth.js'
+import { canWrite, getOwnerId } from '../../utils/auth.js'
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -59,6 +59,7 @@ export async function loadSavings() {
   const { data, error } = await supabase
     .from('savings_ledger')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .order('date_save', { ascending: false })
 
   if (error) {
@@ -85,6 +86,7 @@ export async function loadSavingUses() {
   const { data, error } = await supabase
     .from('saving_uses')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .order('date_use', { ascending: false })
 
   if (error) {
@@ -131,6 +133,7 @@ export async function loadSavingUses() {
           .from('saving_uses')
           .delete()
           .eq('id', id)
+          .eq('owner_id', getOwnerId())
 
         if (error) {
           alert('Gagal hapus saving use: ' + error.message)
@@ -153,6 +156,7 @@ export async function loadSavingUses() {
         .from('saving_uses')
         .select('*')
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
         .single()
 
       if (error) {
@@ -183,6 +187,7 @@ export function setupSavingEvents() {
     if (!canWrite()) return
 
     const payload = {
+      owner_id: getOwnerId(),
       date_use: document.querySelector('#date_use').value,
       from_save: document.querySelector('#from_save').value,
       to_target: document.querySelector('#to_target').value,
@@ -199,6 +204,7 @@ export function setupSavingEvents() {
         .from('saving_uses')
         .update(payload)
         .eq('id', editId)
+        .eq('owner_id', getOwnerId())
 
       error = result.error
     } else {

@@ -1,7 +1,7 @@
 import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
-import { canWrite } from '../../utils/auth.js'
+import { canWrite, getOwnerId } from '../../utils/auth.js'
 
 let currentWeekStart = getThursdayStart(new Date())
 
@@ -119,6 +119,7 @@ export async function loadExpenses() {
   const { data, error } = await supabase
     .from('expenses')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .gte('date_expense', startText)
     .lte('date_expense', endText)
     .order('date_expense', { ascending: true })
@@ -273,6 +274,7 @@ function setupExpenseItemEvents() {
         .from('expenses')
         .delete()
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
 
       if (error) {
         alert('Gagal hapus expense: ' + error.message)
@@ -294,6 +296,7 @@ function setupExpenseItemEvents() {
         .from('expenses')
         .select('*')
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
         .single()
 
       if (error) {
@@ -334,6 +337,7 @@ export function setupExpenseEvents() {
     if (!canWrite()) return
 
     const payload = {
+      owner_id: getOwnerId(),
       date_expense: document.querySelector('#date_expense').value,
       expense_name: document.querySelector('#expense_name').value,
       code: document.querySelector('#code').value,
@@ -349,6 +353,7 @@ export function setupExpenseEvents() {
         .from('expenses')
         .update(payload)
         .eq('id', editId)
+        .eq('owner_id', getOwnerId())
 
       error = result.error
     } else {

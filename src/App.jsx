@@ -6,11 +6,12 @@ import Expense from './pages/Expense.jsx'
 import Income from './pages/Income.jsx'
 import Saving from './pages/Saving.jsx'
 import Weekly from './pages/Weekly.jsx'
-import { isLoggedIn, isViewOnly, login, logout } from './utils/auth.js'
+import { getCurrentUser, isLoggedIn, isViewOnly, login, logout } from './utils/auth.js'
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn())
   const [page, setPage] = useState('dashboard')
+  const [currentUser, setCurrentUser] = useState(getCurrentUser())
   const [error, setError] = useState('')
   const [quickAddToken, setQuickAddToken] = useState(0)
   const viewOnly = loggedIn && isViewOnly()
@@ -29,11 +30,13 @@ export default function App() {
       setTimeout(() => setError(''), 1500)
       return
     }
+    setCurrentUser(getCurrentUser())
     setLoggedIn(true)
   }
 
   function handleLogout() {
     logout()
+    setCurrentUser(null)
     setLoggedIn(false)
     setPage('dashboard')
   }
@@ -64,6 +67,7 @@ export default function App() {
       <Navbar
         page={page}
         viewOnly={viewOnly}
+        currentUser={currentUser}
         onNavigate={setPage}
         onQuickExpense={() => { setPage('expense'); setQuickAddToken(v => v + 1) }}
       />

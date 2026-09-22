@@ -1,7 +1,7 @@
 import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
-import { canWrite } from '../../utils/auth.js'
+import { canWrite, getOwnerId } from '../../utils/auth.js'
 import { getLatestCompletedWednesday, isWednesday } from '../../utils/period.js'
 
 function formatDate(date) {
@@ -52,6 +52,7 @@ async function loadWeeklyAudit() {
   const { data, error } = await supabase
     .from('periodic_summary')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .order('periodic_date', { ascending: false })
 
   if (error) {
@@ -106,6 +107,7 @@ async function loadWeeklyRawChecks() {
   const { data, error } = await supabase
     .from('weekly_checks')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .order('periodic_date', { ascending: false })
 
   if (error) {
@@ -148,6 +150,7 @@ async function loadWeeklyRawChecks() {
         .from('weekly_checks')
         .select('*')
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
         .single()
 
       if (error) {
@@ -180,6 +183,7 @@ async function loadWeeklyRawChecks() {
         .from('weekly_checks')
         .delete()
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
 
       if (error) {
         alert('Gagal hapus weekly check: ' + error.message)
@@ -213,6 +217,7 @@ export function setupWeeklyEvents() {
     }
 
     const payload = {
+      owner_id: getOwnerId(),
       periodic_date: periodicDate,
       cash: Number(document.querySelector('#cash').value || 0),
       dana: Number(document.querySelector('#dana').value || 0),
@@ -230,12 +235,13 @@ export function setupWeeklyEvents() {
         .from('weekly_checks')
         .update(payload)
         .eq('id', editId)
+        .eq('owner_id', getOwnerId())
 
       error = result.error
     } else {
       const result = await supabase
         .from('weekly_checks')
-        .upsert(payload, { onConflict: 'periodic_date' })
+        .upsert(payload, { onConflict: 'owner_id,periodic_date' })
 
       error = result.error
     }

@@ -1,7 +1,7 @@
 import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
-import { canWrite } from '../../utils/auth.js'
+import { canWrite, getOwnerId } from '../../utils/auth.js'
 import { getPeriodEndWednesday } from '../../utils/period.js'
 
 function formatDate(date) {
@@ -50,6 +50,7 @@ export async function loadIncomes() {
   const { data, error } = await supabase
     .from('incomes')
     .select('*')
+    .eq('owner_id', getOwnerId())
     .order('date_income', { ascending: false })
 
   if (error) {
@@ -90,6 +91,7 @@ export async function loadIncomes() {
         .from('incomes')
         .delete()
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
 
       if (error) {
         alert('Gagal hapus income: ' + error.message)
@@ -109,6 +111,7 @@ export async function loadIncomes() {
         .from('incomes')
         .select('*')
         .eq('id', id)
+        .eq('owner_id', getOwnerId())
         .single()
 
       if (error) {
@@ -137,6 +140,7 @@ export function setupIncomeEvents() {
     if (!canWrite()) return
 
     const payload = {
+      owner_id: getOwnerId(),
       date_income: document.querySelector('#date_income').value,
       amount: Number(document.querySelector('#amount_income').value),
       note: document.querySelector('#note_income').value,
@@ -153,6 +157,7 @@ export function setupIncomeEvents() {
         .from('incomes')
         .update(payload)
         .eq('id', editId)
+        .eq('owner_id', getOwnerId())
 
       error = result.error
     } else {

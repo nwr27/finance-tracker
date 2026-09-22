@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../supabase.js'
 import { formatRupiah } from '../utils/format.js'
 import styles from './Dashboard.module.css'
+import { getOwnerId } from '../utils/auth.js'
 
 function SummaryCard({ label, value, className = '' }) {
   return (
@@ -32,9 +33,11 @@ export default function Dashboard({ onLogout }) {
 
   const loadRealtimeSummary = useCallback(async () => {
     setSummaryError('')
+    const ownerId = getOwnerId()
+    if (!ownerId) return
     const [{ data, error }, expensesResult] = await Promise.all([
-      supabase.from('realtime_summary').select('*').single(),
-      supabase.from('expenses').select('code, amount'),
+      supabase.from('realtime_summary').select('*').eq('owner_id', ownerId).maybeSingle(),
+      supabase.from('expenses').select('code, amount').eq('owner_id', ownerId),
     ])
 
     if (error) {
@@ -56,9 +59,12 @@ export default function Dashboard({ onLogout }) {
 
   const loadWeeklySummary = useCallback(async () => {
     setWeeklyError('')
+    const ownerId = getOwnerId()
+    if (!ownerId) return
     const { data, error } = await supabase
       .from('periodic_summary')
       .select('*')
+      .eq('owner_id', ownerId)
       .order('periodic_date', { ascending: false })
       .range(weeklyOffset, weeklyOffset)
 
@@ -84,7 +90,9 @@ export default function Dashboard({ onLogout }) {
 
   async function openCodeStats() {
     setModalOpen(true)
-    const { data, error } = await supabase.from('expenses').select('code, amount')
+    const ownerId = getOwnerId()
+    if (!ownerId) return
+    const { data, error } = await supabase.from('expenses').select('code, amount').eq('owner_id', ownerId)
     if (error) {
       setCodeStats([{ code: 'ERROR', total: 0, percentage: error.message }])
       return
