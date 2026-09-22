@@ -27,3 +27,5 @@ Finance_Tracker_Maintenance_Troubleshooting_Guide.docx
 .archives/*
 .env
 .env.local
+
+.venv
