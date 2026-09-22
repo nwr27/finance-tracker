@@ -1,0 +1,95 @@
+.handle,
+.overlay,
+.header,
+.quickAdd {
+  display: none;
+}
+
+.navbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.navbar button {
+  padding: 10px 18px;
+}
+
+.active {
+  background: #111827;
+}
+
+@media (max-width: 600px) {
+  .handle {
+    display: flex;
+    position: fixed;
+    right: 0;
+    bottom: 25%;
+    z-index: 1001;
+    width: 48px;
+    height: 54px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px 0 0 14px;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+    background: rgb(0 0 0 / 45%);
+  }
+
+  .overlayHidden {
+    display: none;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    width: min(82vw, 300px);
+    padding: 20px;
+    margin: 0;
+    background: #fff;
+    flex-direction: column;
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+    box-shadow: 8px 0 24px rgb(0 0 0 / 16%);
+  }
+
+  .open {
+    transform: translateX(0);
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .header h2 {
+    margin: 0;
+    color: #111827;
+  }
+
+  .close {
+    background: transparent;
+    color: #111827;
+    font-size: 28px;
+    padding: 0 8px;
+  }
+
+  .quickAdd {
+    display: block;
+    margin-top: auto;
+    font-size: 28px;
+    font-weight: 700;
+  }
+}

@@ -1,0 +1,46 @@
+.appContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.loginShell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.loginCard {
+  width: min(100%, 420px);
+  background: #fff;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+}
+
+.loginCard h1 {
+  margin: 0 0 10px;
+}
+
+.loginCard p {
+  color: #6b7280;
+}
+
+.loginCard input {
+  width: 100%;
+  text-align: center;
+  letter-spacing: 8px;
+}
+
+.loginError {
+  min-height: 20px;
+  margin-bottom: 0;
+  color: #dc2626 !important;
+}
+
+@media (max-width: 600px) {
+  .appContainer {
+    padding: 16px;
+  }
+}
