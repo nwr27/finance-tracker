@@ -1471,3 +1471,8 @@ button:active {
 .view-only .expense-menu {
   display: none !important;
 }
+
+.status-pending {
+  background: #f3f4f6;
+  color: #4b5563;
+}

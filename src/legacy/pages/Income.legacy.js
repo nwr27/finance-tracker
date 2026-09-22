@@ -2,6 +2,7 @@ import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
 import { canWrite } from '../../utils/auth.js'
+import { getPeriodEndWednesday } from '../../utils/period.js'
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -140,6 +141,7 @@ export function setupIncomeEvents() {
       amount: Number(document.querySelector('#amount_income').value),
       note: document.querySelector('#note_income').value,
       allocation_type: document.querySelector('#allocation_type').value,
+      periodic_date: getPeriodEndWednesday(document.querySelector('#date_income').value),
     }
 
     const editId = incomeForm.dataset.editId

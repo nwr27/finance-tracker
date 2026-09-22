@@ -3,5 +3,6 @@ import { isViewOnly } from './auth.js'
 export function formatRupiah(value) {
   if (isViewOnly()) return '****'
 
-  return `Rp${Number(value || 0).toLocaleString('id-ID')}`
+  const number = Number(value ?? 0)
+  return `Rp${Math.round(number).toLocaleString('id-ID')}`
 }

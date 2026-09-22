@@ -2,6 +2,7 @@ import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
 import { canWrite } from '../../utils/auth.js'
+import { getLatestCompletedWednesday, isWednesday } from '../../utils/period.js'
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -16,7 +17,7 @@ export function weeklyView() {
       <h2>Input Weekly Check</h2>
 
       <form id="weeklyCheckForm">
-        <input type="date" id="periodic_date" value="${formatDate(new Date())}" required />
+        <input type="date" id="periodic_date" value="${getLatestCompletedWednesday()}" required />
         <input type="number" id="cash" placeholder="Cash" />
         <input type="number" id="dana" placeholder="Dana" />
         <input type="number" id="gopay" placeholder="Gopay" />
@@ -60,17 +61,18 @@ async function loadWeeklyAudit() {
   }
 
   weeklyAuditList.innerHTML = data.map(item => {
-    const difference = Number(item.difference || 0)
+    const hasActual = item.actual_real_balance !== null && item.actual_real_balance !== undefined
+    const difference = hasActual ? Number(item.difference ?? 0) : null
 
-    let status = 'Match'
-    let statusClass = 'status-match'
+    let status = hasActual ? 'Match' : 'Pending'
+    let statusClass = hasActual ? 'status-match' : 'status-pending'
 
-    if (difference > 0) {
+    if (hasActual && difference > 0) {
       status = 'Surplus'
       statusClass = 'status-surplus'
     }
 
-    if (difference < 0) {
+    if (hasActual && difference < 0) {
       status = 'Defisit'
       statusClass = 'status-defisit'
     }
@@ -84,7 +86,7 @@ async function loadWeeklyAudit() {
         <br>
         Data Balance: ${formatRupiah(item.data_balance)}
         <br>
-        Difference: ${formatRupiah(item.difference)}
+        Difference: ${hasActual ? formatRupiah(item.difference) : '-'}
         <br>
         Status: <span class="status-badge ${statusClass}">${status}</span>
         <br><br>
@@ -203,8 +205,15 @@ export function setupWeeklyEvents() {
 
     if (!canWrite()) return
 
+    const periodicDate = document.querySelector('#periodic_date').value
+
+    if (!isWednesday(periodicDate)) {
+      alert('Weekly Check harus menggunakan tanggal Rabu sebagai penutup periode Kamis–Rabu.')
+      return
+    }
+
     const payload = {
-      periodic_date: document.querySelector('#periodic_date').value,
+      periodic_date: periodicDate,
       cash: Number(document.querySelector('#cash').value || 0),
       dana: Number(document.querySelector('#dana').value || 0),
       gopay: Number(document.querySelector('#gopay').value || 0),

@@ -52,7 +52,7 @@ export default function App() {
   }
 
   const pages = {
-    dashboard: <Dashboard />,
+    dashboard: <Dashboard onLogout={handleLogout} />,
     expense: <Expense quickAddToken={quickAddToken} />,
     income: <Income />,
     saving: <Saving />,
@@ -68,11 +68,6 @@ export default function App() {
         onQuickExpense={() => { setPage('expense'); setQuickAddToken(v => v + 1) }}
       />
       {pages[page]}
-      {page === 'dashboard' && (
-        <span style={{ display: 'none' }}>
-          <button id="reactLogoutBridge" onClick={handleLogout}>logout</button>
-        </span>
-      )}
     </div>
   )
 }
