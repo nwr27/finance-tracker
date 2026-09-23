@@ -114,16 +114,18 @@ export default function Dashboard({ onLogout, currentUser }) {
     <main className={styles.page}>
       <section className={styles.dashboardHeader}>
         <h2>Anangi App</h2>
-        {currentUser && (
-          <div className={styles.userBadge} title={`User aktif: ${currentUser.name}`}>
-            {currentUser.name}
-          </div>
-        )}
       </section>
 
       <section className={styles.card}>
         <div className={`${styles.sectionTitleRow} ${styles.dashboardMainTitle}`}>
-          <h3>Ringkasan Utama</h3>
+          <div className={styles.titleWithUser}>
+            <h3>Ringkasan Utama</h3>
+            {currentUser && (
+              <div className={styles.userBadge} title={`User aktif: ${currentUser.name}`}>
+                {currentUser.name}
+              </div>
+            )}
+          </div>
           <div className={styles.dashboardActions}>
             <button onClick={refresh}>Refresh</button>
             <button onClick={onLogout}>Logout</button>

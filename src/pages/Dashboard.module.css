@@ -59,3 +59,10 @@
   background: #fef9c3;
   white-space: nowrap;
 }
+
+.titleWithUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}

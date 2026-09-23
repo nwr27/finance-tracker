@@ -50,10 +50,10 @@ export default function App() {
 
   const pages = {
     dashboard: <Dashboard onLogout={handleLogout} currentUser={currentUser} />,
-    expense: <Expense quickAddToken={quickAddToken} />,
-    income: <Income />,
-    saving: <Saving />,
-    weekly: <Weekly />,
+    expense: <Expense quickAddToken={quickAddToken} currentUser={currentUser} />,
+    income: <Income currentUser={currentUser} />,
+    saving: <Saving currentUser={currentUser} />,
+    weekly: <Weekly currentUser={currentUser} />,
   }
 
   return (
