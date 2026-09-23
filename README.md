@@ -1,4 +1,4 @@
-# Finance Tracker
+# Anangi App
 
 Aplikasi pribadi untuk mencatat, mengalokasikan, dan mengevaluasi keuangan secara harian dan mingguan.
 

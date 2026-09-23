@@ -9,7 +9,7 @@ const items = [
   ['saving', 'Saving'],
 ]
 
-export default function Navbar({ page, onNavigate, onQuickExpense, currentUser }) {
+export default function Navbar({ page, onNavigate, onQuickExpense }) {
   const [open, setOpen] = useState(false)
   const handleRef = useRef(null)
   const drag = useRef({ down: false, moved: false, startY: 0, startBottom: 25 })
@@ -65,7 +65,7 @@ export default function Navbar({ page, onNavigate, onQuickExpense, currentUser }
 
       <nav className={`${styles.navbar} ${open ? styles.open : ''}`}>
         <div className={styles.header}>
-          <h2>Finance<br />Tracker</h2>
+          <h2>Anangi<br />App</h2>
           <button className={styles.close} onClick={() => setOpen(false)}>×</button>
         </div>
 
@@ -76,12 +76,6 @@ export default function Navbar({ page, onNavigate, onQuickExpense, currentUser }
             onClick={() => navigate(key)}
           >{label}</button>
         ))}
-
-        {currentUser && (
-          <div className={styles.userBadge} title={`User aktif: ${currentUser.name}`}>
-            {currentUser.name}
-          </div>
-        )}
 
         <button className={styles.quickAdd} onClick={() => { setOpen(false); onQuickExpense() }}>+</button>
       </nav>

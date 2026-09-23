@@ -8,7 +8,7 @@ export function navbar() {
 
     <nav id="sideNavbar" class="navbar side-navbar">
       <div class="side-navbar-header">
-        <h2>Finance<br>Tracker</h2>
+        <h2>Anangi<br>App</h2>
         <button id="closeMenuBtn" class="close-menu-btn">×</button>
       </div>
 

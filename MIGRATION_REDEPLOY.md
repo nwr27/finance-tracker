@@ -1,4 +1,4 @@
-# Finance Tracker — React + Vite Migration & Redeploy
+# Anangi App — React + Vite Migration & Redeploy
 
 ## Arsitektur paket ini
 - React + Vite sebagai application shell (`main.jsx`, `App.jsx`).
@@ -56,4 +56,4 @@
 `VITE_*` dimasukkan ke bundle browser. Karena itu passcode frontend bukan mekanisme keamanan database yang kuat. Proteksi data tetap harus mengandalkan Supabase RLS/policy. Jangan pernah menaruh Supabase service-role key di variabel `VITE_*`.
 
 ## Tahap migrasi berikutnya
-Setelah versi ini stabil, pindahkan satu halaman per tahap dari `src/legacy/pages/*.legacy.js` menjadi React native (state/effect/handler React). Pada tahap tersebut CSS halaman yang bersangkutan dipindahkan dari `global.css` ke `NamaHalaman.module.css`. Ini mengurangi risiko merusak seluruh finance tracker sekaligus.
+Setelah versi ini stabil, pindahkan satu halaman per tahap dari `src/legacy/pages/*.legacy.js` menjadi React native (state/effect/handler React). Pada tahap tersebut CSS halaman yang bersangkutan dipindahkan dari `global.css` ke `NamaHalaman.module.css`. Ini mengurangi risiko merusak seluruh anangi app sekaligus.

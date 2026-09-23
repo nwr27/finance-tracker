@@ -39,7 +39,7 @@ export default function App() {
     return (
       <div className={styles.loginShell}>
         <section className={styles.loginCard}>
-          <h1>Finance Tracker</h1>
+          <h1>Anangi App</h1>
           <p>Masukkan passcode</p>
           <input autoFocus type="password" placeholder="••••" maxLength="4" inputMode="numeric" onInput={handlePasscode} />
           <p className={styles.loginError}>{error}</p>
@@ -49,7 +49,7 @@ export default function App() {
   }
 
   const pages = {
-    dashboard: <Dashboard onLogout={handleLogout} />,
+    dashboard: <Dashboard onLogout={handleLogout} currentUser={currentUser} />,
     expense: <Expense quickAddToken={quickAddToken} />,
     income: <Income />,
     saving: <Saving />,
@@ -60,7 +60,6 @@ export default function App() {
     <div className={styles.appContainer}>
       <Navbar
         page={page}
-        currentUser={currentUser}
         onNavigate={setPage}
         onQuickExpense={() => { setPage('expense'); setQuickAddToken(v => v + 1) }}
       />

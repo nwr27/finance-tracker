@@ -21,7 +21,7 @@ function DifferenceCard({ value, actualValue }) {
   return <SummaryCard label="Difference" value={number} className={stateClass} />
 }
 
-export default function Dashboard({ onLogout }) {
+export default function Dashboard({ onLogout, currentUser }) {
   const [summary, setSummary] = useState(null)
   const [weekly, setWeekly] = useState(null)
   const [weeklyOffset, setWeeklyOffset] = useState(0)
@@ -112,7 +112,14 @@ export default function Dashboard({ onLogout }) {
 
   return (
     <main className={styles.page}>
-      <section className={styles.dashboardHeader}><h2>Finance Tracker</h2></section>
+      <section className={styles.dashboardHeader}>
+        <h2>Anangi App</h2>
+        {currentUser && (
+          <div className={styles.userBadge} title={`User aktif: ${currentUser.name}`}>
+            {currentUser.name}
+          </div>
+        )}
+      </section>
 
       <section className={styles.card}>
         <div className={`${styles.sectionTitleRow} ${styles.dashboardMainTitle}`}>

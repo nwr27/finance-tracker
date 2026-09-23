@@ -9,7 +9,7 @@ const WEEKLY_LIMIT = 1
 export function dashboardView() {
   return `
     <section class="dashboard-header">
-      <h2>Finance Tracker</h2>
+      <h2>Anangi App</h2>
     </section>
     <section class="card">
       <div class="section-title-row dashboard-main-title">

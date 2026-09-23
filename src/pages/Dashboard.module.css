@@ -44,3 +44,18 @@
   .weeklyCard { padding: 12px; }
   .codeStatRow { grid-template-columns: 80px 1fr 60px; gap: 8px; font-size: 13px; }
 }
+
+.userBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: #166534;
+  background: #fef9c3;
+  white-space: nowrap;
+}

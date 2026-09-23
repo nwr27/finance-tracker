@@ -13,7 +13,7 @@ function loginView() {
   return `
     <div class="container">
       <section class="card login-card">
-        <h1>Finance Tracker</h1>
+        <h1>Anangi App</h1>
         <p>Masukkan passcode</p>
 
         <form id="loginForm">
