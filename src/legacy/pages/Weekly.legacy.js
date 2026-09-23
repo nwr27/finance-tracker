@@ -20,8 +20,8 @@ export function weeklyView() {
         <input type="date" id="periodic_date" value="${getLatestCompletedWednesday()}" required />
         <input type="number" id="cash" placeholder="Cash" />
         <input type="number" id="dana" placeholder="Dana" />
-        <input type="number" id="gopay" placeholder="Gopay" />
-        <input type="number" id="bca" placeholder="BCA" />
+        <input type="number" id="gopay" placeholder="Gopay / Seabank" />
+        <input type="number" id="bca" placeholder="BCA / CIMB Niaga" />
         <input type="text" id="weekly_note" placeholder="Catatan weekly check" />
         <button type="submit">Simpan Weekly Check</button>
       </form>
@@ -123,9 +123,9 @@ async function loadWeeklyRawChecks() {
       <br>
       Dana: ${formatRupiah(item.dana)}
       <br>
-      Gopay: ${formatRupiah(item.gopay)}
+      Gopay / Seabank: ${formatRupiah(item.gopay)}
       <br>
-      BCA: ${formatRupiah(item.bca)}
+      BCA / CIMB Niaga: ${formatRupiah(item.bca)}
       <br>
       Real Balance: ${formatRupiah(item.real_balance)}
       <br>
