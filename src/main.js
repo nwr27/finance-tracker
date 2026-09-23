@@ -5,7 +5,7 @@ import { expenseView, loadExpenses, setupExpenseEvents } from './pages/Expense.j
 import { incomeView, loadIncomes, setupIncomeEvents } from './pages/Income.js'
 import { weeklyView, loadWeeklyChecks, setupWeeklyEvents } from './pages/Weekly.js'
 import { savingView, loadSavings, loadSavingUses, setupSavingEvents } from './pages/Saving.js'
-import { isLoggedIn, login, logout, isViewOnly } from './utils/auth.js'
+import { isLoggedIn, login, logout } from './utils/auth.js'
 
 const app = document.querySelector('#app')
 
@@ -187,7 +187,6 @@ function setupRoutes() {
 }
 
 function renderApp() {
-  document.body.classList.toggle('view-only', isViewOnly())
 
   app.innerHTML = `
   <div class="container">

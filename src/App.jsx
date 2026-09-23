@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './App.module.css'
 import Navbar from './components/Navbar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -6,7 +6,7 @@ import Expense from './pages/Expense.jsx'
 import Income from './pages/Income.jsx'
 import Saving from './pages/Saving.jsx'
 import Weekly from './pages/Weekly.jsx'
-import { getCurrentUser, isLoggedIn, isViewOnly, login, logout } from './utils/auth.js'
+import { getCurrentUser, isLoggedIn, login, logout } from './utils/auth.js'
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(isLoggedIn())
@@ -14,12 +14,6 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(getCurrentUser())
   const [error, setError] = useState('')
   const [quickAddToken, setQuickAddToken] = useState(0)
-  const viewOnly = loggedIn && isViewOnly()
-
-  useEffect(() => {
-    document.body.classList.toggle('view-only', viewOnly)
-    return () => document.body.classList.remove('view-only')
-  }, [viewOnly])
 
   function handlePasscode(e) {
     const value = e.target.value
@@ -66,7 +60,6 @@ export default function App() {
     <div className={styles.appContainer}>
       <Navbar
         page={page}
-        viewOnly={viewOnly}
         currentUser={currentUser}
         onNavigate={setPage}
         onQuickExpense={() => { setPage('expense'); setQuickAddToken(v => v + 1) }}

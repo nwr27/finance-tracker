@@ -9,7 +9,7 @@ const items = [
   ['saving', 'Saving'],
 ]
 
-export default function Navbar({ page, onNavigate, onQuickExpense, viewOnly, currentUser }) {
+export default function Navbar({ page, onNavigate, onQuickExpense, currentUser }) {
   const [open, setOpen] = useState(false)
   const handleRef = useRef(null)
   const drag = useRef({ down: false, moved: false, startY: 0, startBottom: 25 })
@@ -83,9 +83,7 @@ export default function Navbar({ page, onNavigate, onQuickExpense, viewOnly, cur
           </div>
         )}
 
-        {!viewOnly && (
-          <button className={styles.quickAdd} onClick={() => { setOpen(false); onQuickExpense() }}>+</button>
-        )}
+        <button className={styles.quickAdd} onClick={() => { setOpen(false); onQuickExpense() }}>+</button>
       </nav>
     </>
   )

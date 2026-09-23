@@ -11,7 +11,7 @@ VITE_NANA_PASSCODE=1234
 VITE_MEYSA_PASSCODE=0000
 ```
 
-`VITE_APP_PASSCODE` lama masih didukung sebagai fallback untuk NANA.
+`VITE_APP_PASSCODE` dan `VITE_VIEW_PASSCODE` sudah tidak digunakan. Login hanya memakai NANA dan MEYSA.
 
 ## 3. Vercel
 Di Project > Settings > Environment Variables tambahkan:

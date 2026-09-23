@@ -49,7 +49,7 @@
 3. Framework preset: Vite.
 4. Build command: `npm run build`.
 5. Output directory: `dist`.
-6. Tambahkan `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_APP_PASSCODE`, `VITE_VIEW_PASSCODE` pada Environment Variables.
+6. Tambahkan `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` pada Environment Variables.
 7. Deploy.
 
 ## Catatan keamanan

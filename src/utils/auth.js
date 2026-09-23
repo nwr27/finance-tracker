@@ -1,6 +1,5 @@
-const NANA_PASSCODE = import.meta.env.VITE_NANA_PASSCODE || import.meta.env.VITE_APP_PASSCODE
+const NANA_PASSCODE = import.meta.env.VITE_NANA_PASSCODE
 const MEYSA_PASSCODE = import.meta.env.VITE_MEYSA_PASSCODE
-const VIEW_PASSCODE = import.meta.env.VITE_VIEW_PASSCODE
 
 const USERS = {
   nana: { id: 'nana', name: 'NANA' },
@@ -13,27 +12,22 @@ export function isLoggedIn() {
 
 export function login(passcode) {
   let user = null
-  let accessMode = 'full'
 
   if (passcode === NANA_PASSCODE) user = USERS.nana
   else if (passcode === MEYSA_PASSCODE) user = USERS.meysa
-  else if (VIEW_PASSCODE && passcode === VIEW_PASSCODE) {
-    user = USERS.nana
-    accessMode = 'view'
-  }
 
   if (!user) return false
 
   localStorage.setItem('finance_passcode_ok', 'true')
-  localStorage.setItem('finance_access_mode', accessMode)
   localStorage.setItem('finance_user', JSON.stringify(user))
+  localStorage.removeItem('finance_access_mode')
   return true
 }
 
 export function logout() {
   localStorage.removeItem('finance_passcode_ok')
-  localStorage.removeItem('finance_access_mode')
   localStorage.removeItem('finance_user')
+  localStorage.removeItem('finance_access_mode')
 }
 
 export function getCurrentUser() {
@@ -51,14 +45,6 @@ export function getOwnerId() {
   return getCurrentUser()?.id || null
 }
 
-export function getAccessMode() {
-  return localStorage.getItem('finance_access_mode') || 'view'
-}
-
-export function isViewOnly() {
-  return getAccessMode() === 'view'
-}
-
 export function canWrite() {
-  return isLoggedIn() && !isViewOnly()
+  return isLoggedIn()
 }
