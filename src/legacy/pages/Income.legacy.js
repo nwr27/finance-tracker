@@ -15,6 +15,7 @@ export function incomeView() {
   return `
     <section class="card">
       <h2>Input Income</h2>
+      <p class="form-help">Anjay dapet uang dari siapa?</p>
 
       <form id="incomeForm">
         <input type="date" id="date_income" value="${formatDate(new Date())}" required />

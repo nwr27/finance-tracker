@@ -14,6 +14,7 @@ export function savingView() {
   return `
     <section class="card">
       <h2>Saving Use</h2>
+      <p class="form-help">Hayo balance nya kurang yaa, Boros banget sih lho!</p>
 
       <form id="savingUseForm">
         <input type="date" id="date_use" value="${formatDate(new Date())}" required />

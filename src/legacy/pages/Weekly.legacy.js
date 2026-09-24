@@ -15,7 +15,7 @@ export function weeklyView() {
   return `
     <section class="card">
       <h2>Input Weekly Check</h2>
-      <p class="form-help">Isi seluruh uang yang benar-benar ada di Cash, Dana, GoPay/SeaBank, dan BCA/CIMB. Jangan masukkan Piggy atau saldo akun Trading.</p>
+      <p class="form-help">Jangan masukkan Piggy atau saldo akun Trading.</p>
 
       <form id="weeklyCheckForm">
         <input type="date" id="periodic_date" value="${getLatestCompletedWednesday()}" required />
