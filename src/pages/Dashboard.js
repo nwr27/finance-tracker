@@ -79,7 +79,7 @@ async function loadRealtimeSummary() {
       </div>
 
       <div class="hero-card">
-        <span>Total Save (BCA)</span>
+        <span>Total Save</span>
         <b>${formatRupiah(data.realtime_save - data.trading)}</b>
       </div>
 
@@ -96,7 +96,7 @@ async function loadRealtimeSummary() {
       ${summaryCard('Wedding', data.wedding)}
       ${summaryCard('Umrah', data.umrah)}
       ${summaryCard('Piggy', data.piggy)}
-      ${summaryCard('BCA + Trading', data.realtime_save)}
+      ${summaryCard('Save + Trading', data.realtime_save)}
       ${summaryCard('Total Expense', data.total_expense)}
       ${summaryCard('Balance Allocation', data.total_balance_allocation)}
 

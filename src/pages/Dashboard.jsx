@@ -136,7 +136,7 @@ export default function Dashboard({ onLogout, currentUser }) {
         {summary && <>
           <div className={styles.heroGrid}>
             <div className={styles.heroCard}><span>Available Balance</span><b>{formatRupiah(summary.realtime_balance)}</b></div>
-            <div className={styles.heroCard}><span>Total Save (BCA)</span><b>{formatRupiah(summary.realtime_save - summary.trading)}</b></div>
+            <div className={styles.heroCard}><span>Total Save</span><b>{formatRupiah(summary.realtime_save - summary.trading)}</b></div>
             <div className={styles.heroCard}><span>Trading</span><b>{formatRupiah(summary.trading)}</b></div>
           </div>
 
@@ -146,7 +146,7 @@ export default function Dashboard({ onLogout, currentUser }) {
             <SummaryCard label="Wedding" value={summary.wedding} />
             <SummaryCard label="Umrah" value={summary.umrah} />
             <SummaryCard label="Piggy" value={summary.piggy} />
-            <SummaryCard label="BCA + Trading" value={summary.realtime_save} />
+            <SummaryCard label="Save + Trading" value={summary.realtime_save} />
             <SummaryCard label="Total Expense" value={summary.total_expense} />
             <SummaryCard label="Balance Allocation" value={summary.total_balance_allocation} />
             <button className={`${styles.summaryCard} ${styles.clickableCard}`} onClick={openCodeStats}>
