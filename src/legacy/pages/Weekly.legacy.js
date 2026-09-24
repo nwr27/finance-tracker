@@ -15,6 +15,7 @@ export function weeklyView() {
   return `
     <section class="card">
       <h2>Input Weekly Check</h2>
+      <p class="form-help">Isi seluruh uang yang benar-benar ada di Cash, Dana, GoPay/SeaBank, dan BCA/CIMB. Jangan masukkan Piggy atau saldo akun Trading.</p>
 
       <form id="weeklyCheckForm">
         <input type="date" id="periodic_date" value="${getLatestCompletedWednesday()}" required />
@@ -28,14 +29,14 @@ export function weeklyView() {
     </section>
 
     <section class="card">
-      <h2>Weekly Audit</h2>
+      <h2>Audit Balance Mingguan</h2>
       <button id="loadWeeklyAudit">Refresh Audit</button>
       <div id="weeklyAuditList"></div>
     </section>
 
     <section class="card">
-      <h2>Weekly Check Raw Data</h2>
-      <button id="loadWeeklyRaw">Refresh Raw Data</button>
+      <h2>Rincian Uang Terhitung</h2>
+      <button id="loadWeeklyRaw">Refresh Rincian</button>
       <div id="weeklyRawList"></div>
     </section>
   `
@@ -81,21 +82,25 @@ async function loadWeeklyAudit() {
     return `
       <div class="item">
         <b>Periode: ${item.periodic_date}</b><br>
-        Previous Real Balance: ${formatRupiah(item.previous_real_balance)}
+        Total Uang Terhitung: ${item.actual_total === null ? '-' : formatRupiah(item.actual_total)}
         <br>
-        Actual Real Balance: ${item.actual_real_balance === null ? '-' : formatRupiah(item.actual_real_balance)}
+        Saving yang Diaudit: ${formatRupiah(item.audited_saving)}
         <br>
-        Data Balance: ${formatRupiah(item.data_balance)}
+        Balance Aktual: ${item.actual_real_balance === null ? '-' : formatRupiah(item.actual_real_balance)}
         <br>
-        Difference: ${hasActual ? formatRupiah(item.difference) : '-'}
+        Balance Seharusnya: ${formatRupiah(item.data_balance)}
+        <br>
+        Selisih Balance: ${hasActual ? formatRupiah(item.difference) : '-'}
         <br>
         Status: <span class="status-badge ${statusClass}">${status}</span>
         <br><br>
-        Expense Usage: ${formatRupiah(item.expense_usage)}
+        Balance Minggu Lalu: ${formatRupiah(item.previous_real_balance)}
         <br>
-        Balance Allocation: ${formatRupiah(item.balance_allocation)}
+        Balance Masuk: ${formatRupiah(item.balance_allocation)}
         <br>
-        Realtime Save: ${formatRupiah(item.realtime_save)}
+        Pengeluaran: ${formatRupiah(item.expense_usage)}
+        <br>
+        <small>Piggy dan Modal Trading tidak termasuk dalam audit.</small>
       </div>
     `
   }).join('')
@@ -127,9 +132,9 @@ async function loadWeeklyRawChecks() {
       <br>
       BCA / CIMB Niaga: ${formatRupiah(item.bca)}
       <br>
-      Real Balance: ${formatRupiah(item.real_balance)}
+      Total Uang Terhitung: ${formatRupiah(item.real_balance)}
       <br>
-      Note: ${item.note || '-'}
+      Catatan: ${item.note || '-'}
       <br><br>
 
       <button class="edit-btn" data-edit-weekly="${item.id}">

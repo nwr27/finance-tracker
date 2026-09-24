@@ -15,10 +15,10 @@ function SummaryCard({ label, value, className = '' }) {
 
 function DifferenceCard({ value, actualValue }) {
   const hasActual = actualValue !== null && actualValue !== undefined
-  if (!hasActual) return <SummaryCard label="Difference" value={null} className={styles.diffPending} />
+  if (!hasActual) return <SummaryCard label="Selisih Balance" value={null} className={styles.diffPending} />
   const number = Number(value ?? 0)
   const stateClass = number > 0 ? styles.diffSurplus : number < 0 ? styles.diffDefisit : styles.diffMatch
-  return <SummaryCard label="Difference" value={number} className={stateClass} />
+  return <SummaryCard label="Selisih Balance" value={number} className={stateClass} />
 }
 
 export default function Dashboard({ onLogout, currentUser }) {
@@ -135,20 +135,20 @@ export default function Dashboard({ onLogout, currentUser }) {
         {summaryError && <p>{summaryError}</p>}
         {summary && <>
           <div className={styles.heroGrid}>
-            <div className={styles.heroCard}><span>Available Balance</span><b>{formatRupiah(summary.realtime_balance)}</b></div>
-            <div className={styles.heroCard}><span>Total Save</span><b>{formatRupiah(summary.realtime_save - summary.trading)}</b></div>
-            <div className={styles.heroCard}><span>Trading</span><b>{formatRupiah(summary.trading)}</b></div>
+            <div className={styles.heroCard}><span>Balance Tersedia</span><b>{formatRupiah(summary.realtime_balance)}</b></div>
+            <div className={styles.heroCard}><span>Total Saving</span><b>{formatRupiah(summary.realtime_save - summary.trading)}</b></div>
+            <div className={styles.heroCard}><span>Modal Trading</span><b>{formatRupiah(summary.trading)}</b></div>
           </div>
 
-          <h3 className={styles.subTitle}>Saving Detail</h3>
+          <h3 className={styles.subTitle}>Rincian Saving</h3>
           <div className={styles.summaryGrid}>
             <SummaryCard label="Nest Egg" value={summary.nest_egg} />
             <SummaryCard label="Wedding" value={summary.wedding} />
             <SummaryCard label="Umrah" value={summary.umrah} />
             <SummaryCard label="Piggy" value={summary.piggy} />
-            <SummaryCard label="Save + Trading" value={summary.realtime_save} />
-            <SummaryCard label="Total Expense" value={summary.total_expense} />
-            <SummaryCard label="Balance Allocation" value={summary.total_balance_allocation} />
+            <SummaryCard label="Saving Diaudit" value={Number(summary.nest_egg || 0) + Number(summary.wedding || 0) + Number(summary.umrah || 0)} />
+            <SummaryCard label="Total Pengeluaran" value={summary.total_expense} />
+            <SummaryCard label="Total Balance Masuk" value={summary.total_balance_allocation} />
             <button className={`${styles.summaryCard} ${styles.clickableCard}`} onClick={openCodeStats}>
               <span>{topCode.code}</span><b>{formatRupiah(topCode.total)}</b>
             </button>
@@ -158,7 +158,7 @@ export default function Dashboard({ onLogout, currentUser }) {
 
       <section className={`${styles.card} ${styles.weeklySummaryCard}`}>
         <div className={styles.sectionTitleRow}>
-          <h3>Weekly Summary</h3>
+          <h3>Ringkasan Audit Mingguan</h3>
           <div className={styles.weeklyNav}>
             <button onClick={() => setWeeklyOffset(v => Math.max(0, v - 1))} disabled={weeklyOffset === 0}>↑</button>
             <button onClick={() => setWeeklyOffset(v => v + 1)}>↓</button>
@@ -169,12 +169,13 @@ export default function Dashboard({ onLogout, currentUser }) {
         {weekly && <div className={styles.weeklyCard}>
           <div className={styles.weeklyCardHeader}><h4>{weekly.periodic_date}</h4><span>Periode</span></div>
           <div className={styles.weeklyGrid}>
-            <SummaryCard label="Previous Actual Balance" value={weekly.previous_real_balance} />
-            <SummaryCard label="Balance Allocation" value={weekly.balance_allocation} />
-            <SummaryCard label="Expense Usage" value={weekly.expense_usage} />
-            <SummaryCard label="Realtime Save" value={weekly.realtime_save} />
-            <SummaryCard label="Data Balance" value={weekly.data_balance} />
-            <SummaryCard label="Actual Balance" value={weekly.actual_real_balance} />
+            <SummaryCard label="Total Uang Terhitung" value={weekly.actual_total} />
+            <SummaryCard label="Saving yang Diaudit" value={weekly.audited_saving} />
+            <SummaryCard label="Balance Aktual" value={weekly.actual_real_balance} />
+            <SummaryCard label="Balance Seharusnya" value={weekly.data_balance} />
+            <SummaryCard label="Balance Minggu Lalu" value={weekly.previous_real_balance} />
+            <SummaryCard label="Balance Masuk" value={weekly.balance_allocation} />
+            <SummaryCard label="Pengeluaran" value={weekly.expense_usage} />
             <DifferenceCard value={weekly.difference} actualValue={weekly.actual_real_balance} />
           </div>
         </div>}
