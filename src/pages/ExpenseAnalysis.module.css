@@ -1,0 +1,51 @@
+.page { width: 100%; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.header h2, .header p, .card h3 { margin: 0; }
+.header p { margin-top: 6px; color: #6b7280; }
+.heroGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.heroCard { background: #111827; color: white; padding: 18px; border-radius: 14px; text-align: left; border: 2px solid transparent; }
+.heroCard span, .heroCard small { display: block; }
+.heroCard span { color: #d1d5db; font-size: 13px; margin-bottom: 7px; }
+.heroCard b { display: block; font-size: 21px; }
+.heroCard small { color: #9ca3af; margin-top: 7px; }
+.heroCard.active { border-color: #2563eb; box-shadow: 0 0 0 2px rgb(37 99 235 / 15%); }
+.card { background: white; padding: 18px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgb(0 0 0 / 8%); }
+.filterHeader, .resultHeader { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.filters label { font-size: 12px; font-weight: 700; color: #6b7280; }
+.filters select, .filters input { display: block; width: 100%; margin-top: 6px; box-sizing: border-box; }
+.secondary { background: #e5e7eb; color: #111827; }
+.resultHeader span { color: #6b7280; font-size: 13px; }
+.resultHeader b { font-size: 22px; }
+.list { border-top: 1px solid #e5e7eb; }
+.row { display: grid; grid-template-columns: 120px minmax(180px, 1fr) 90px 150px; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid #e5e7eb; }
+.date { color: #6b7280; font-size: 13px; }
+.main b, .main span { display: block; }
+.main span { color: #6b7280; font-size: 12px; margin-top: 4px; }
+.code { justify-self: start; background: #eef2ff; color: #1d4ed8; padding: 5px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+.amount { text-align: right; }
+.empty { padding: 28px 0; text-align: center; color: #6b7280; }
+.error { color: #b91c1c; }
+@media (max-width: 760px) {
+  .heroGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .heroCard { padding: 14px; }
+  .heroCard b { font-size: 17px; overflow-wrap: anywhere; }
+  .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row { grid-template-columns: 1fr auto; gap: 6px 10px; }
+  .date { grid-column: 1; }
+  .main { grid-column: 1; }
+  .code { grid-column: 2; grid-row: 1; justify-self: end; }
+  .amount { grid-column: 2; grid-row: 2; }
+}
+.editButton { justify-self: end; padding: 7px 12px; font-size: 12px; background: #2563eb; color: white; }
+.modalBackdrop { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 18px; background: rgb(17 24 39 / 55%); }
+.editModal { width: min(520px, 100%); background: white; border-radius: 14px; padding: 20px; box-shadow: 0 20px 60px rgb(0 0 0 / 25%); }
+.modalHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+.modalHeader h3 { margin: 0; }
+.modalHeader span { display: block; margin-top: 4px; color: #6b7280; font-size: 12px; }
+.closeButton { padding: 8px 11px; background: #111827; color: white; }
+.editModal label { display: block; margin-top: 12px; font-size: 12px; font-weight: 700; color: #6b7280; }
+.editModal input { display: block; width: 100%; box-sizing: border-box; margin-top: 6px; }
+.modalActions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+@media (min-width: 761px) { .row { grid-template-columns: 120px minmax(180px, 1fr) 90px 150px 70px; } }
+@media (max-width: 760px) { .editButton { grid-column: 2; grid-row: 3; } }

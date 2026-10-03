@@ -28,8 +28,10 @@ export default function Dashboard({ onLogout, currentUser }) {
   const [topCode, setTopCode] = useState({ code: 'Code', total: 0 })
   const [codeStats, setCodeStats] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
+  const [expenseBreakdown, setExpenseBreakdown] = useState({ total: 0, nmi: 0, fm: 0, personal: 0 })
   const [summaryError, setSummaryError] = useState('')
   const [weeklyError, setWeeklyError] = useState('')
+  const [weeklyExpenseBreakdown, setWeeklyExpenseBreakdown] = useState({ total: 0, nmi: 0, fm: 0, personal: 0 })
 
   const loadRealtimeSummary = useCallback(async () => {
     setSummaryError('')
@@ -53,6 +55,10 @@ export default function Dashboard({ onLogout, currentUser }) {
       acc[code] = (acc[code] || 0) + Number(item.amount || 0)
       return acc
     }, {})
+    const totalExpense = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    const nmiExpense = expenses.filter(item => String(item.code || '').trim().toUpperCase() === 'NMI').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    const fmExpense = expenses.filter(item => String(item.code || '').trim().toUpperCase() === 'FM').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    setExpenseBreakdown({ total: totalExpense, nmi: nmiExpense, fm: fmExpense, personal: totalExpense - nmiExpense - fmExpense })
     const sorted = Object.entries(grouped).sort((a, b) => b[1] - a[1])
     setTopCode(sorted.length ? { code: sorted[0][0], total: sorted[0][1] } : { code: 'Code', total: 0 })
   }, [])
@@ -73,7 +79,26 @@ export default function Dashboard({ onLogout, currentUser }) {
       setWeeklyError(`Gagal ambil weekly summary: ${error.message}`)
       return
     }
-    setWeekly(data?.[0] || null)
+    const selectedWeekly = data?.[0] || null
+    setWeekly(selectedWeekly)
+    if (!selectedWeekly) {
+      setWeeklyExpenseBreakdown({ total: 0, nmi: 0, fm: 0, personal: 0 })
+      return
+    }
+    const { data: weekExpenses, error: weekExpenseError } = await supabase
+      .from('expenses')
+      .select('code, amount')
+      .eq('owner_id', ownerId)
+      .eq('periodic_date', selectedWeekly.periodic_date)
+    if (weekExpenseError) {
+      console.error(weekExpenseError)
+      return
+    }
+    const items = weekExpenses || []
+    const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    const nmi = items.filter(item => String(item.code || '').trim().toUpperCase() === 'NMI').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    const fm = items.filter(item => String(item.code || '').trim().toUpperCase() === 'FM').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    setWeeklyExpenseBreakdown({ total, nmi, fm, personal: total - nmi - fm })
   }, [weeklyOffset])
 
   const refresh = useCallback(async () => {
@@ -154,7 +179,10 @@ export default function Dashboard({ onLogout, currentUser }) {
             <SummaryCard label="Piggy (di luar audit)" value={piggy} />
             <SummaryCard label="Modal Trading (di luar audit)" value={trading} />
             <SummaryCard label="Saving Diaudit" value={auditedSaving} />
-            <SummaryCard label="Total Pengeluaran" value={summary.total_expense} />
+            <SummaryCard label="Pengeluaran Pribadi" value={expenseBreakdown.personal} />
+            <SummaryCard label="Dana Talang NMI" value={expenseBreakdown.nmi} />
+            <SummaryCard label="Biaya Keluarga (FM)" value={expenseBreakdown.fm} />
+            <SummaryCard label="Total Pengeluaran" value={expenseBreakdown.total} />
             <SummaryCard label="Total Balance Masuk" value={summary.total_balance_allocation} />
             <button className={`${styles.summaryCard} ${styles.clickableCard}`} onClick={openCodeStats}>
               <span>{topCode.code}</span><b>{formatRupiah(topCode.total)}</b>
@@ -182,7 +210,10 @@ export default function Dashboard({ onLogout, currentUser }) {
             <SummaryCard label="Balance Tersedia Menurut Data" value={weekly.data_balance} />
             <SummaryCard label="Baseline Minggu Lalu" value={weekly.previous_real_balance} />
             <SummaryCard label="Balance Masuk" value={weekly.balance_allocation} />
-            <SummaryCard label="Pengeluaran" value={weekly.expense_usage} />
+            <SummaryCard label="Pengeluaran Total Minggu Ini" value={weeklyExpenseBreakdown.total} />
+            <SummaryCard label="Pengeluaran Pribadi Minggu Ini" value={weeklyExpenseBreakdown.personal} />
+            <SummaryCard label="Dana Talang NMI Minggu Ini" value={weeklyExpenseBreakdown.nmi} />
+            <SummaryCard label="Biaya Keluarga (FM) Minggu Ini" value={weeklyExpenseBreakdown.fm} />
             <DifferenceCard value={weekly.difference} actualValue={weekly.actual_real_balance} />
           </div>
         </div>}

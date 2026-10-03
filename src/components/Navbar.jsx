@@ -4,6 +4,7 @@ import styles from './Navbar.module.css'
 const items = [
   ['dashboard', 'Dashboard'],
   ['expense', 'Expense'],
+  ['analysis', 'Analisis'],
   ['weekly', 'Weekly'],
   ['income', 'Income'],
   ['saving', 'Saving'],

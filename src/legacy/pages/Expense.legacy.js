@@ -2,6 +2,7 @@ import { supabase } from '../../supabase.js'
 import { formatRupiah } from '../../utils/format.js'
 import { notifyDataChanged } from '../../utils/events.js'
 import { canWrite, getOwnerId } from '../../utils/auth.js'
+import { getPeriodEndWednesday } from '../../utils/period.js'
 
 let currentWeekStart = getThursdayStart(new Date())
 
@@ -145,6 +146,9 @@ export async function loadExpenses() {
   const dayCount = visibleWeekDays.length
 
   const totalWeek = data.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  const nmiWeek = data.filter(item => String(item.code || '').trim().toUpperCase() === 'NMI').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  const fmWeek = data.filter(item => String(item.code || '').trim().toUpperCase() === 'FM').reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  const personalWeek = totalWeek - nmiWeek - fmWeek
   const totalTransaction = data.length
   const averageDaily = dayCount > 0 ? totalWeek / dayCount : 0
 
@@ -153,6 +157,21 @@ export async function loadExpenses() {
       <div class="summary-card">
         <span>Total Minggu Ini</span>
         <b>${formatRupiah(totalWeek)}</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Pengeluaran Pribadi</span>
+        <b>${formatRupiah(personalWeek)}</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Dana Talang NMI</span>
+        <b>${formatRupiah(nmiWeek)}</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Biaya Keluarga (FM)</span>
+        <b>${formatRupiah(fmWeek)}</b>
       </div>
 
       <div class="summary-card">
@@ -342,6 +361,7 @@ export function setupExpenseEvents() {
       expense_name: document.querySelector('#expense_name').value,
       code: document.querySelector('#code').value,
       amount: Number(document.querySelector('#amount').value),
+      periodic_date: getPeriodEndWednesday(document.querySelector('#date_expense').value),
     }
 
     const editId = expenseForm.dataset.editId

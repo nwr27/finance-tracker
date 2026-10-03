@@ -6,6 +6,7 @@ import Expense from './pages/Expense.jsx'
 import Income from './pages/Income.jsx'
 import Saving from './pages/Saving.jsx'
 import Weekly from './pages/Weekly.jsx'
+import ExpenseAnalysis from './pages/ExpenseAnalysis.jsx'
 import { getCurrentUser, isLoggedIn, login, logout } from './utils/auth.js'
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
     income: <Income currentUser={currentUser} />,
     saving: <Saving currentUser={currentUser} />,
     weekly: <Weekly currentUser={currentUser} />,
+    analysis: <ExpenseAnalysis currentUser={currentUser} />,
   }
 
   return (
