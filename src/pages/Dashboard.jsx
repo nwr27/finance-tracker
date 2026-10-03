@@ -110,6 +110,12 @@ export default function Dashboard({ onLogout, currentUser }) {
     })))
   }
 
+  const availableBalance = Number(summary?.realtime_balance || 0)
+  const auditedSaving = Number(summary?.nest_egg || 0) + Number(summary?.wedding || 0) + Number(summary?.umrah || 0)
+  const piggy = Number(summary?.piggy || 0)
+  const trading = Number(summary?.trading || 0)
+  const totalWealth = availableBalance + auditedSaving + piggy + trading
+
   return (
     <main className={styles.page}>
       <section className={styles.dashboardHeader}>
@@ -135,9 +141,9 @@ export default function Dashboard({ onLogout, currentUser }) {
         {summaryError && <p>{summaryError}</p>}
         {summary && <>
           <div className={styles.heroGrid}>
-            <div className={styles.heroCard}><span>Balance Tersedia</span><b>{formatRupiah(summary.realtime_balance)}</b></div>
-            <div className={styles.heroCard}><span>Total Saving</span><b>{formatRupiah(summary.realtime_save - summary.trading)}</b></div>
-            <div className={styles.heroCard}><span>Modal Trading</span><b>{formatRupiah(summary.trading)}</b></div>
+            <div className={styles.heroCard}><span>Balance Tersedia</span><b>{formatRupiah(availableBalance)}</b><small>Uang biaya hidup yang bebas digunakan</small></div>
+            <div className={styles.heroCard}><span>Saving Diaudit</span><b>{formatRupiah(auditedSaving)}</b><small>Nest Egg + Wedding + Umrah</small></div>
+            <div className={styles.heroCard}><span>Total Kekayaan</span><b>{formatRupiah(totalWealth)}</b><small>Balance + seluruh saving + aset dingin</small></div>
           </div>
 
           <h3 className={styles.subTitle}>Rincian Saving</h3>
@@ -145,8 +151,9 @@ export default function Dashboard({ onLogout, currentUser }) {
             <SummaryCard label="Nest Egg" value={summary.nest_egg} />
             <SummaryCard label="Wedding" value={summary.wedding} />
             <SummaryCard label="Umrah" value={summary.umrah} />
-            <SummaryCard label="Piggy" value={summary.piggy} />
-            <SummaryCard label="Saving Diaudit" value={Number(summary.nest_egg || 0) + Number(summary.wedding || 0) + Number(summary.umrah || 0)} />
+            <SummaryCard label="Piggy (di luar audit)" value={piggy} />
+            <SummaryCard label="Modal Trading (di luar audit)" value={trading} />
+            <SummaryCard label="Saving Diaudit" value={auditedSaving} />
             <SummaryCard label="Total Pengeluaran" value={summary.total_expense} />
             <SummaryCard label="Total Balance Masuk" value={summary.total_balance_allocation} />
             <button className={`${styles.summaryCard} ${styles.clickableCard}`} onClick={openCodeStats}>
@@ -169,11 +176,11 @@ export default function Dashboard({ onLogout, currentUser }) {
         {weekly && <div className={styles.weeklyCard}>
           <div className={styles.weeklyCardHeader}><h4>{weekly.periodic_date}</h4><span>Periode</span></div>
           <div className={styles.weeklyGrid}>
-            <SummaryCard label="Total Uang Terhitung" value={weekly.actual_total} />
+            <SummaryCard label="Total Saldo Aktual" value={weekly.actual_total} />
             <SummaryCard label="Saving yang Diaudit" value={weekly.audited_saving} />
-            <SummaryCard label="Balance Aktual" value={weekly.actual_real_balance} />
-            <SummaryCard label="Balance Seharusnya" value={weekly.data_balance} />
-            <SummaryCard label="Balance Minggu Lalu" value={weekly.previous_real_balance} />
+            <SummaryCard label="Balance Tersedia Aktual" value={weekly.actual_real_balance} />
+            <SummaryCard label="Balance Tersedia Menurut Data" value={weekly.data_balance} />
+            <SummaryCard label="Baseline Minggu Lalu" value={weekly.previous_real_balance} />
             <SummaryCard label="Balance Masuk" value={weekly.balance_allocation} />
             <SummaryCard label="Pengeluaran" value={weekly.expense_usage} />
             <DifferenceCard value={weekly.difference} actualValue={weekly.actual_real_balance} />

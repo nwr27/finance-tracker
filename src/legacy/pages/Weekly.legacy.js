@@ -15,7 +15,7 @@ export function weeklyView() {
   return `
     <section class="card">
       <h2>Input Weekly Check</h2>
-      <p class="form-help">Jangan masukkan Piggy atau saldo akun Trading.</p>
+      <p class="form-help">Jangan masukkan aset dingin: Piggy atau Trading.</p>
 
       <form id="weeklyCheckForm">
         <input type="date" id="periodic_date" value="${getLatestCompletedWednesday()}" required />
@@ -35,7 +35,7 @@ export function weeklyView() {
     </section>
 
     <section class="card">
-      <h2>Rincian Uang Terhitung</h2>
+      <h2>Rincian Saldo Aktual</h2>
       <button id="loadWeeklyRaw">Refresh Rincian</button>
       <div id="weeklyRawList"></div>
     </section>
@@ -82,19 +82,19 @@ async function loadWeeklyAudit() {
     return `
       <div class="item">
         <b>Periode: ${item.periodic_date}</b><br>
-        Total Uang Terhitung: ${item.actual_total === null ? '-' : formatRupiah(item.actual_total)}
+        Total Saldo Aktual: ${item.actual_total === null ? '-' : formatRupiah(item.actual_total)}
         <br>
         Saving yang Diaudit: ${formatRupiah(item.audited_saving)}
         <br>
-        Balance Aktual: ${item.actual_real_balance === null ? '-' : formatRupiah(item.actual_real_balance)}
+        Balance Tersedia Aktual: ${item.actual_real_balance === null ? '-' : formatRupiah(item.actual_real_balance)}
         <br>
-        Balance Seharusnya: ${formatRupiah(item.data_balance)}
+        Balance Tersedia Menurut Data: ${formatRupiah(item.data_balance)}
         <br>
         Selisih Balance: ${hasActual ? formatRupiah(item.difference) : '-'}
         <br>
         Status: <span class="status-badge ${statusClass}">${status}</span>
         <br><br>
-        Balance Minggu Lalu: ${formatRupiah(item.previous_real_balance)}
+        Baseline Minggu Lalu: ${formatRupiah(item.previous_real_balance)}
         <br>
         Balance Masuk: ${formatRupiah(item.balance_allocation)}
         <br>
@@ -132,7 +132,7 @@ async function loadWeeklyRawChecks() {
       <br>
       BCA / CIMB Niaga: ${formatRupiah(item.bca)}
       <br>
-      Total Uang Terhitung: ${formatRupiah(item.real_balance)}
+      Total Saldo Aktual: ${formatRupiah(item.real_balance)}
       <br>
       Catatan: ${item.note || '-'}
       <br><br>
